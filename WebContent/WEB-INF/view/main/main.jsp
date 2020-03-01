@@ -29,7 +29,7 @@
     <!-- slider_area_end -->
 
     <!-- service_area_start  -->
-    <div class="service_area">
+<!--     <div class="service_area">
         <div class="container">
             <div class="row justify-content-center ">
                 <div class="col-lg-7 col-md-10">
@@ -82,9 +82,9 @@
             </div>
         </div>
     </div>
-    <!-- service_area_end -->
+    service_area_end
 
-    <!-- pet_care_area_start  -->
+    pet_care_area_start 
     <div class="pet_care_area">
         <div class="container">
             <div class="row align-items-center">
@@ -107,9 +107,9 @@
             </div>
         </div>
     </div>
-    <!-- pet_care_area_end  -->
+    pet_care_area_end 
 
-    <!-- adapt_area_start  -->
+    adapt_area_start 
     <div class="adapt_area">
         <div class="container">
             <div class="row justify-content-between align-items-center">
@@ -157,9 +157,9 @@
             </div>
         </div>
     </div>
-    <!-- adapt_area_end  -->
+    adapt_area_end 
 
-    <!-- testmonial_area_start  -->
+    testmonial_area_start 
     <div class="testmonial_area">
         <div class="container">
             <div class="row justify-content-center">
@@ -207,9 +207,9 @@
 
         </div>
     </div>
-    <!-- testmonial_area_end  -->
+    testmonial_area_end 
 
-    <!-- team_area_start  -->
+    team_area_start 
     <div class="team_area">
         <div class="container">
             <div class="row justify-content-center ">
@@ -263,7 +263,7 @@
             </div>
         </div>
     </div>
-    <!-- team_area_start  -->
+    team_area_start 
 
     <div class="contact_anipat anipat_bg_1">
         <div class="container">
@@ -284,7 +284,7 @@
         </div>
     </div>
 
-    <!-- footer_start  -->
+    footer_start 
     <footer class="footer">
         <div class="footer_top">
             <div class="container">
@@ -375,16 +375,16 @@
                 <div class="row">
                     <div class="col-xl-12">
                         <p class="copy_right text-center">
-                            <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                            <p>Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0.
   Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="ti-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-  <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
+  Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0.</p>
                         </p>
                     </div>
                 </div>
             </div>
         </div>
     </footer>
-    <!-- footer_end  -->
+    footer_end  -->
 
 
     <!-- JS here -->

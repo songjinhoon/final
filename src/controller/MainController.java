@@ -16,6 +16,7 @@ public class MainController extends ActionAnnotation {
 	
 	@RequestMapping(value = "main", method = RequestMethod.GET)
 	public String list(HttpServletRequest request, HttpServletResponse response) {
+
 		return "/WEB-INF/view/main/main.jsp";
 	}
 }
