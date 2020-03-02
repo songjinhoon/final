@@ -17,5 +17,8 @@
         <h1>로그인 성공입니다</h1>
         <input type="button" value="로그아웃" onclick="location.href='${pageContext.request.contextPath}/user/logoutForm'">
     </c:if>
+    <c:if test="${error ne null}">
+        <h1>사용자가 취소를 요청했다.</h1>
+    </c:if>
 </body>
 </html>

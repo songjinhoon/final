@@ -41,7 +41,7 @@ public class KakaoAPI {
 	        int responseCode = conn.getResponseCode();
 	        System.out.println("responseCode : " + responseCode);
 	 
-	            //    요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
+            //    요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
 	        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 	        String line = "";
 	        String result = "";
@@ -51,7 +51,7 @@ public class KakaoAPI {
 	        }
 	        System.out.println("response body : " + result);
 	        
-	        //    Gson 라이브러리에 포함된 클래스로 JSON파싱 객체 생성
+	        //    Gson 라이브러리에 포함된 클래스로 JSON파싱 객체 생성 -> 토큰 분리작업
 	        JsonParser parser = new JsonParser();
 	        JsonElement element = parser.parse(result);
 	        
@@ -72,7 +72,6 @@ public class KakaoAPI {
 	}
     
     public HashMap<String, Object> getUserInfo (String access_Token) {
-        
         //    요청하는 클라이언트마다 가진 정보가 다를 수 있기에 HashMap타입으로 선언
         HashMap<String, Object> userInfo = new HashMap<>();
         String reqURL = "https://kapi.kakao.com/v2/user/me";
@@ -86,8 +85,8 @@ public class KakaoAPI {
             
             int responseCode = conn.getResponseCode();
             System.out.println("responseCode : " + responseCode);
-            
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+//          nickname 한글이 깨져서 utf-8을 넣어봄
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
             
             String line = "";
             String result = "";
