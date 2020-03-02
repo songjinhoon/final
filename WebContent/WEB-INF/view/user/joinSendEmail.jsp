@@ -3,7 +3,6 @@
 
 <html>
 <title>JoinSendEmail</title>
-
 <body>
 	<div class="container">
 		<div class="alert alert-success mt-4" role="alert">

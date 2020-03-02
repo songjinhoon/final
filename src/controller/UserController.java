@@ -112,7 +112,7 @@ public class UserController extends ActionAnnotation {
 	// 인증메일 보내기
 	@RequestMapping(value = "joinSendEmail", method = RequestMethod.GET)
 	public String joinSendEmail(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
+		response.setContentType("text/html; charset=UTF-8");
 		request.setCharacterEncoding("utf-8");
 
 		MybatisUserDao service = MybatisUserDao.getInstance();
@@ -206,7 +206,7 @@ public class UserController extends ActionAnnotation {
 	//메일 인증 확인
 	@RequestMapping(value="joinEmailCheckPro", method=RequestMethod.GET)
 	public String joinEmailCheckPro(HttpServletRequest request, HttpServletResponse response) throws Exception  {
-		
+		response.setContentType("text/html; charset=UTF-8");
 		request.setCharacterEncoding("utf-8");
 
 		HttpSession session = request.getSession();
@@ -242,7 +242,6 @@ public class UserController extends ActionAnnotation {
 			script.println("location.href = '/zSpringProject/main/main'");
 			script.println("</script>");
 			script.close();		
-			return "redirect:/main/main";
 		}else {
 			
 			PrintWriter script = response.getWriter();
@@ -253,5 +252,7 @@ public class UserController extends ActionAnnotation {
 			script.close();		
 			return "redirect:/main/main";
 		}
+
+		return "redirect:/main/main";
 	}
 }
