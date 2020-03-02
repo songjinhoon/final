@@ -135,9 +135,8 @@ public class UserController extends ActionAnnotation {
 		}
 
 		int emailChecked = service.getUserEmailChecked(userId);
-		System.out.println(emailChecked);
+		
 		if (emailChecked == 1) {
-
 			PrintWriter script = response.getWriter();
 			script.println("<script>");
 			script.println("alert('이미 인증 된 회원입니다.');");
@@ -146,19 +145,17 @@ public class UserController extends ActionAnnotation {
 
 			return "redirect:/main/main";
 		}else if (emailChecked == 0) {
-			// 사용자에게 보낼 메시지를 기입합니다.
+			// 사용자에게 보낼 이메일 내용을 입력
 			String host = "http://localhost:8080/zSpringProject/";
 			String from = "oakNutSpring@gmail.com";
 			String to = service.getUserEmail(userId);
 
-			String subject = "도토리마켓 회원가입 이메일 인증!";
-
-			String content = "다음 링크에 접속하여 이메일 확인을 진행해주세요." +
+			String subject = "도토리마켓 회원가입 이메일 인증메일입니다!";
+			String content = "다음 링크에 접속하여 이메일 확인을 진행해주세요:D" +
 
 					"<a href='" + host + "joinEmailCheckPro?code=" + new SHA256().getSHA256(to) + "'>이메일 인증하기</a>";
 
-			// SMTP에 접속하기 위한 정보를 기입합니다.
-
+			// SMTP에 접속하기 위한 정보를 입력하는 부분
 			Properties p = new Properties();
 			p.put("mail.smtp.user", from);
 			p.put("mail.smtp.host", "smtp.googlemail.com");
@@ -173,39 +170,23 @@ public class UserController extends ActionAnnotation {
 			try {
 
 				Authenticator auth = new Gmail();
-
 				Session ses = Session.getInstance(p, auth);
-
 				ses.setDebug(true);
-
 				MimeMessage msg = new MimeMessage(ses);
-
 				msg.setSubject(subject);
-
 				Address fromAddr = new InternetAddress(from);
-
 				msg.setFrom(fromAddr);
-
 				Address toAddr = new InternetAddress(to);
-
 				msg.addRecipient(Message.RecipientType.TO, toAddr);
-
 				msg.setContent(content, "text/html;charset=UTF-8");
-
 				Transport.send(msg);
-
 			} catch (Exception e) {
 
 				e.printStackTrace();
-
 				PrintWriter script = response.getWriter();
-
 				script.println("<script>");
-
 				script.println("alert('오류가 발생했습니다..');");
-
 				script.println("</script>");
-
 				script.close();
 
 				return "redirect:/user/joinForm";
@@ -214,5 +195,45 @@ public class UserController extends ActionAnnotation {
 			return "/WEB-INF/view/user/joinSendEmail.jsp";
 		}
 		return "/WEB-INF/view/user/joinSendEmail.jsp";
+	}
+	
+	
+	//메일 인증 확인
+	@RequestMapping(value="joinEmailCheckPro", method=RequestMethod.GET)
+	public String joinEmailCheckPro(HttpServletRequest request, HttpServletResponse response) throws Exception  {
+		
+		HttpSession session = request.getSession();
+		String code = request.getParameter("code");
+		
+		System.out.println(code);
+		
+		String userId = null;
+		MybatisUserDao service = MybatisUserDao.getInstance();
+		
+		if(session.getAttribute("userId") != null) {
+			userId = (String)session.getAttribute("userId");
+		}else if(userId == null) {
+
+			PrintWriter script = response.getWriter();
+			script.println("<script>");
+			script.println("alert('로그인을 해주세요.');");
+			script.println("location.href = 'loginForm.jsp'");
+			script.println("</script>");
+			script.close();
+		}
+		
+		String userEmail = service.getUserEmail(userId);
+		
+		//인증코드와 디비에 저장된 코드 확인
+		boolean rightCode = (new SHA256().getSHA256(userEmail).equals(code)) ? true : false;
+		
+		if(rightCode == true) {
+			service.setUser
+		}
+		
+		
+		
+	
+		return "/WEB-INF/view/user/joinEmailCheckPro.jsp";
 	}
 }
