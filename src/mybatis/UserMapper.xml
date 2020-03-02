@@ -7,4 +7,14 @@
 			VALUES (#{userId}, #{userPassword}, #{userName}, #{userEmail}, #{userEmailHash},
 			 #{userEmailCheck}, #{userPhone}, #{userAddress},0)
 	</insert>
+	
+	<select id="getUserEmailChecked" resultType="int" parameterType="String">
+		SELECT userEmailCheck FROM user 
+		WHERE userId = #{userId}
+	</select>
+	
+	<select id="getUserEmail" resultType="String" parameterType="String">
+		SELECT userEmail FROM user
+		WHERE userId = #{userId}
+	</select>
 </mapper>
