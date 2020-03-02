@@ -6,25 +6,24 @@
 <title>Join</title>
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
-
 <script>
 function checkIt(){
 	var userinput = eval("document.userinput");
 	
-	if(!document.user.id.value){ alert("ID를 입력하세요"); 
-	user.id.focus();
+	if(!document.user.userId.value){ alert("ID를 입력하세요"); 
+	user.userId.focus();
 	return false;}
 	
-	if(!document.user.password.value){ alert("비밀번호를 입력하세요"); 
-	user.password.focus();
+	if(!document.user.userPasswd.value){ alert("비밀번호를 입력하세요"); 
+	user.userPasswd.focus();
 	return false;}
 	
-	if(!document.user.name.value){ alert("이름을 입력하세요"); 
-	user.name.focus();
+	if(!document.user.userName.value){ alert("이름을 입력하세요"); 
+	user.userName.focus();
 	return false;}
 
-	if(!document.user.email.value){ alert("이메일을 입력하세요"); 
-	user.email.focus();
+	if(!document.user.userEmail.value){ alert("이메일을 입력하세요"); 
+	user.userEmail.focus();
 	return false;}
 	
 	if(!document.user.phone1.value){ alert("핸드폰번호를 입력하세요"); 
@@ -59,25 +58,25 @@ label {
 				<table style="color: white;">
 					<tr>
 						<td width="400"><label>ID</label> 
-							<input class="w3-input w3-round" size="8" type="text" name="id">
+							<input class="w3-input w3-round" size="8" type="text" name="userId">
 						</td>
 					</tr>
 					<tr>
 						<td>
 							<label>Password</label> 
-							<input class="w3-input w3-round" size="15" type="password" name="password">
+							<input class="w3-input w3-round" size="15" type="password" name="userPasswd">
 						</td>
 					</tr>
 					<tr>
 						<td>
 							<label>Name</label> 
-							<input class="w3-input w3-round" size="8" type="text" name="name">
+							<input class="w3-input w3-round" size="8" type="text" name="userName">
 						</td>
 					</tr>
 					<tr>
 						<td>
 							<label>Email</label> 
-							<input class="w3-input w3-round" size="25" type="text" name="email">
+							<input class="w3-input w3-round" size="25" type="text" name="userEmail">
 						</td>
 					</tr>
 					<tr>
@@ -90,7 +89,7 @@ label {
 					</tr>
 					<tr>
 						<td>
-							<label>Address</label> <input class="w3-input w3-round" size="30" type="text" name="address">
+							<label>Address</label> <input class="w3-input w3-round" size="30" type="text" name="userAddress">
 						</td>
 					</tr>
 				</table>
@@ -102,6 +101,5 @@ label {
 			</form>
 		</div>
 	</div>
-
 </body>
 </html>

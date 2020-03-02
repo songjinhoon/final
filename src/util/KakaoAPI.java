@@ -32,7 +32,7 @@ public class KakaoAPI {
 	        StringBuilder sb = new StringBuilder();
 	        sb.append("grant_type=authorization_code");
 	        sb.append("&client_id=de621075efa65c9dc9ec223e759b1e6d");
-	        sb.append("&redirect_uri=http://localhost:8080/zSpringProject/user/loginForm");
+	        sb.append("&redirect_uri=http://localhost:8080/zSpringProject/user/kakaoLoginForm");
 	        sb.append("&code=" + authorize_code);
 	        bw.write(sb.toString());
 	        bw.flush();

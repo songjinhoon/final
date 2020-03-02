@@ -1,8 +1,8 @@
 --user table
 create table user(
-userid varchar(20),
-userpassword varchar(20),
-username varchar(20),
+userId varchar(20),
+userPasswd varchar(20),
+userName varchar(20),
 userEmail varchar(30),
 userEmailHash varchar(80),
 userEmailCheck int default 0,

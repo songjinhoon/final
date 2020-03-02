@@ -31,40 +31,29 @@ public class UserController extends ActionAnnotation {
 	public void initProcess(HttpServletRequest request, HttpServletResponse response) {
 
 	}
-
-	@RequestMapping(value = "loginForm", method = RequestMethod.GET)
-	public String loginForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value = "kakaoLoginForm", method = RequestMethod.GET)
+	public String kakaoLoginForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
+//		if -> 카카오 계정으로 로그인했을 때, 해당 계정과 일치하는 userId가 존재하는지 체크 후 존재하지 않으면 아래 절차를 받고 존재하면(기존에 가입을 했다면) 바로 세션에 저장후 메인으로 보내줌.
 		String code = request.getParameter("code");
-		String error = request.getParameter("error");
+		String error = request.getParameter("error"); // 나중에 활용할 수 있음
 		request.setAttribute("error", error);
 		if(code != null) {
-//			동의를 했다는거.
 			KakaoAPI kakao = new KakaoAPI();
 			String access_Token = kakao.getAccessToken(code);
-			System.out.println("토큰: " + access_Token);
 			HashMap<String, Object> userInfo = kakao.getUserInfo(access_Token);
-			
-//			이부분은 다시 체크해보도록 한다.
-			if (userInfo.get("email") != null) {
-		    	HttpSession session = request.getSession();
-		        session.setAttribute("userId", userInfo.get("email"));
-		        session.setAttribute("access_Token", access_Token);
+			if (userInfo.get("nickname") != null) {
+				request.setAttribute("userId", userInfo.get("email"));
+		    	request.setAttribute("userName", userInfo.get("nickname"));
 		    }
 		}
 		
-//		System.out.println("code: " + code);
-		KakaoAPI kakao = new KakaoAPI();
-		String access_Token = kakao.getAccessToken(code);
-//      System.out.println("controller access_token : " + access_Token);
-		HashMap<String, Object> userInfo = kakao.getUserInfo(access_Token);
-		System.out.println("login Controller : " + userInfo);
+		return "/WEB-INF/view/user/kakaoLoginForm.jsp";
+	}
+	
 
-		if (userInfo.get("email") != null) {
-			HttpSession session = request.getSession();
-			session.setAttribute("userId", userInfo.get("email"));
-			session.setAttribute("access_Token", access_Token);
-		}
-
+	@RequestMapping(value = "loginForm", method = RequestMethod.GET)
+	public String loginForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
 		return "/WEB-INF/view/user/loginForm.jsp";
 	}
 
@@ -98,22 +87,22 @@ public class UserController extends ActionAnnotation {
 		request.setCharacterEncoding("utf-8");
 
 		HttpSession session = request.getSession();
-		String userId = request.getParameter("id");
-		String userPasswd = request.getParameter("password");
-		String userName = request.getParameter("name");
-		String userEmail = request.getParameter("email");
+		String userId = request.getParameter("userId");
+		String userPasswd = request.getParameter("userPasswd");
+		String userName = request.getParameter("userName");
+		String userEmail = request.getParameter("userEmail");
 		String userEmailHash = SHA256.getSHA256(userEmail);
 		int userEmailCheck = 0;
 		String userPhone = request.getParameter("phone1") + request.getParameter("phone2")
 				+ request.getParameter("phone3");
-		String userAddress = request.getParameter("address");
+		String userAddress = request.getParameter("userAddress");
 
 		MybatisUserDao service = MybatisUserDao.getInstance();
 
 		User user = new User();
 
 		user.setUserId(userId);
-		user.setUserPassword(userPasswd);
+		user.setUserPasswd(userPasswd);
 		user.setUserName(userName);
 		user.setUserEmail(userEmail);
 		user.setUserEmailHash(userEmailHash);
