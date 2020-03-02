@@ -17,4 +17,10 @@
 		SELECT userEmail FROM user
 		WHERE userId = #{userId}
 	</select>
+	
+	<update id="setUserEmailChecked" parameterType="String">
+		UPDATE user
+		SET userEmailCheck=1
+		WHERE userId=#{userId}
+	</update>
 </mapper>

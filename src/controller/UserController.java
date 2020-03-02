@@ -112,6 +112,8 @@ public class UserController extends ActionAnnotation {
 	// 인증메일 보내기
 	@RequestMapping(value = "joinSendEmail", method = RequestMethod.GET)
 	public String joinSendEmail(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		request.setCharacterEncoding("utf-8");
 
 		MybatisUserDao service = MybatisUserDao.getInstance();
 		HttpSession session = request.getSession();
@@ -128,6 +130,7 @@ public class UserController extends ActionAnnotation {
 			PrintWriter script = response.getWriter();
 			script.println("<script>");
 			script.println("alert('로그인을 해주세요.');");
+			script.println("location.href = '/zSpringProject/user/loginForm'");
 			script.println("</script>");
 			script.close();
 
@@ -140,13 +143,14 @@ public class UserController extends ActionAnnotation {
 			PrintWriter script = response.getWriter();
 			script.println("<script>");
 			script.println("alert('이미 인증 된 회원입니다.');");
+			script.println("location.href = '/zSpringProject/main/main'");
 			script.println("</script>");
 			script.close();
 
 			return "redirect:/main/main";
 		}else if (emailChecked == 0) {
 			// 사용자에게 보낼 이메일 내용을 입력
-			String host = "http://localhost:8080/zSpringProject/";
+			String host = "http://localhost:8080/zSpringProject/user/";
 			String from = "oakNutSpring@gmail.com";
 			String to = service.getUserEmail(userId);
 
@@ -186,6 +190,7 @@ public class UserController extends ActionAnnotation {
 				PrintWriter script = response.getWriter();
 				script.println("<script>");
 				script.println("alert('오류가 발생했습니다..');");
+				script.println("history.back();");
 				script.println("</script>");
 				script.close();
 
@@ -202,6 +207,8 @@ public class UserController extends ActionAnnotation {
 	@RequestMapping(value="joinEmailCheckPro", method=RequestMethod.GET)
 	public String joinEmailCheckPro(HttpServletRequest request, HttpServletResponse response) throws Exception  {
 		
+		request.setCharacterEncoding("utf-8");
+
 		HttpSession session = request.getSession();
 		String code = request.getParameter("code");
 		
@@ -217,7 +224,7 @@ public class UserController extends ActionAnnotation {
 			PrintWriter script = response.getWriter();
 			script.println("<script>");
 			script.println("alert('로그인을 해주세요.');");
-			script.println("location.href = 'loginForm.jsp'");
+			script.println("location.href = '/zSpringProject/user/loginForm'");
 			script.println("</script>");
 			script.close();
 		}
@@ -226,14 +233,25 @@ public class UserController extends ActionAnnotation {
 		
 		//인증코드와 디비에 저장된 코드 확인
 		boolean rightCode = (new SHA256().getSHA256(userEmail).equals(code)) ? true : false;
-		
+		System.out.println(rightCode);
 		if(rightCode == true) {
-			service.setUser
+			service.setUserEmailChecked(userId);
+			PrintWriter script = response.getWriter();
+			script.println("<script>");
+			script.println("alert('인증에 성공했습니다.');");
+			script.println("location.href = '/zSpringProject/main/main'");
+			script.println("</script>");
+			script.close();		
+			return "redirect:/main/main";
+		}else {
+			
+			PrintWriter script = response.getWriter();
+			script.println("<script>");
+			script.println("alert('유효하지 않은 코드입니다.');");
+			script.println("location.href = '/zSpringProject/main/main'");
+			script.println("</script>");
+			script.close();		
+			return "redirect:/main/main";
 		}
-		
-		
-		
-	
-		return "/WEB-INF/view/user/joinEmailCheckPro.jsp";
 	}
 }
