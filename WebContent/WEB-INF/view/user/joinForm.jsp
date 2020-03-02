@@ -53,7 +53,7 @@ label {
 			<br>
 		<div class="w3-panel w3-card w3-round-xlarge"
 			style="width: 40%; height: 60%; background-color: #745d46;">
-			<form method="get" action="${pageContext.request.contextPath}/user/joinPro" name="user" onsubmit="return checkIt()">
+			<form method="post" action="${pageContext.request.contextPath}/user/joinPro" name="user" onsubmit="return checkIt()">
 				<p>
 					<br>
 				<table style="color: white;">

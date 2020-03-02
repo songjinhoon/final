@@ -63,7 +63,7 @@ public class UserController extends ActionAnnotation {
 	}
 	
 	//회원가입 처리 (이메일 인증)
-	@RequestMapping(value = "joinPro", method = RequestMethod.GET)
+	@RequestMapping(value = "joinPro", method = RequestMethod.POST)
 	public String joinPro(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		request.setCharacterEncoding("utf-8");
@@ -96,6 +96,13 @@ public class UserController extends ActionAnnotation {
 		session.setAttribute("userPasswd", userPasswd);
 		
 		  return "redirect:/user/joinSendEmail";
+	}
+	
+	@RequestMapping(value="joinEmailSend", method = RequestMethod.GET)
+	public String joinEmailSend(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		
+		return "/WEB-INF/view/user/joinEmailSend.jsp";
 	}
 }
 
