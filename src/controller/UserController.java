@@ -9,7 +9,10 @@ import javax.servlet.http.HttpSession;
 import action.ActionAnnotation;
 import action.RequestMapping;
 import action.RequestMapping.RequestMethod;
+import model.User;
+import repository.MybatisUserDao;
 import util.KakaoAPI;
+import util.SHA256;
 
 @SuppressWarnings("serial")
 public class UserController extends ActionAnnotation {
@@ -52,7 +55,47 @@ public class UserController extends ActionAnnotation {
 	    session.removeAttribute("userId");
 	    return "/WEB-INF/view/user/loginForm.jsp";
 	}
-
-
+	//회원가입 폼
+	@RequestMapping(value = "joinForm", method = RequestMethod.GET)
+	public String joinForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		  return "/WEB-INF/view/user/joinForm.jsp";
+	}
+	
+	//회원가입 처리 (이메일 인증)
+	@RequestMapping(value = "joinPro", method = RequestMethod.GET)
+	public String joinPro(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		request.setCharacterEncoding("utf-8");
+		
+		HttpSession session = request.getSession();
+		String userId = request.getParameter("id");
+		String userPasswd = request.getParameter("password");
+		String userName = request.getParameter("name");
+		String userEmail = request.getParameter("email");
+		String userEmailHash = SHA256.getSHA256(userEmail);
+		int userEmailCheck = 0;
+		String userPhone =  request.getParameter("phone1") + request.getParameter("phone2") + request.getParameter("phone3");
+		String userAddress = request.getParameter("address");
+		
+		MybatisUserDao service = MybatisUserDao.getInstance();
+		
+		User user = new User();
+		
+		user.setUserId(userId);
+		user.setUserPassword(userPasswd);
+		user.setUserName(userName);
+		user.setUserEmail(userEmail);
+		user.setUserEmailHash(userEmailHash);
+		user.setUserEmailCheck(userEmailCheck);
+		user.setUserPhone(userPhone);
+		user.setUserAddress(userAddress);
+		
+		service.joinUser(user);
+		session.setAttribute("userId", userId);
+		session.setAttribute("userPasswd", userPasswd);
+		
+		  return "redirect:/user/joinSendEmail";
+	}
 }
 
