@@ -4,7 +4,7 @@
 <mapper namespace="mybatis.UserMapper">
 	<insert id="joinUser" parameterType="User">
 			INSERT INTO user
-			VALUES (#{userId}, #{userPassword}, #{userName}, #{userEmail}, #{userEmailHash},
+			VALUES (#{userId}, #{userPasswd}, #{userName}, #{userEmail}, #{userEmailHash},
 			 #{userEmailCheck}, #{userPhone}, #{userAddress},0)
 	</insert>
 	
