@@ -250,7 +250,6 @@ public class UserController extends ActionAnnotation {
 			script.println("location.href = '/zSpringProject/main/main'");
 			script.println("</script>");
 			script.close();		
-			return "redirect:/main/main";
 		}
 
 		return "redirect:/main/main";
