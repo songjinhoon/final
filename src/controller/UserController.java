@@ -36,6 +36,16 @@ public class UserController extends ActionAnnotation {
 
 	}
 	
+	@RequestMapping(value = "selectJoinForm", method = RequestMethod.GET)
+	public String selectJoinForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	    String naverApiUrl = NaverAPI.getApiUrl();
+	    String kakaoApiUrl = KakaoAPI.getApiUrl();
+	    request.setAttribute("naverApiUrl", naverApiUrl);
+		request.setAttribute("kakaoApiUrl", kakaoApiUrl);
+		
+		return "/WEB-INF/view/user/selectJoinForm.jsp";
+	}
+	
 	@RequestMapping(value = "kakaoLoginForm", method = RequestMethod.GET)
 	public String kakaoLoginForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String code = request.getParameter("code");
@@ -67,8 +77,6 @@ public class UserController extends ActionAnnotation {
 
 	@RequestMapping(value = "loginForm", method = RequestMethod.GET)
 	public String loginForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
-	    String naverApiUrl = NaverAPI.getApiUrl();
-	    request.setAttribute("naverApiUrl", naverApiUrl);
 		
 		return "/WEB-INF/view/user/loginForm.jsp";
 	}

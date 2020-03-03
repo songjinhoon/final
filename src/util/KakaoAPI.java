@@ -5,8 +5,12 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.security.SecureRandom;
 import java.util.HashMap;
 
 import com.google.gson.JsonElement;
@@ -14,6 +18,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
  
 public class KakaoAPI {
+	private static String clientId = "de621075efa65c9dc9ec223e759b1e6d";
+	private static String redirectUri = "http://localhost:8080/zSpringProject/user/kakaoLoginForm";
+	
+	public static String getApiUrl() {
+		String apiUrl = "https://kauth.kakao.com/oauth/authorize?client_id=" + clientId +"&redirect_uri=" + redirectUri +"&response_type=code";
+		
+		return apiUrl; 
+	}
 	
     public String getAccessToken (String authorize_code) {
 	    String access_Token = "";
@@ -22,7 +34,6 @@ public class KakaoAPI {
 	    try {
 	        URL url = new URL(reqURL);
 	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-	        
 	        //    POST 요청을 위해 기본값이 false인 setDoOutput을 true로
 	        conn.setRequestMethod("POST");
 	        conn.setDoOutput(true);
@@ -31,17 +42,15 @@ public class KakaoAPI {
 	        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
 	        StringBuilder sb = new StringBuilder();
 	        sb.append("grant_type=authorization_code");
-	        sb.append("&client_id=de621075efa65c9dc9ec223e759b1e6d");
-	        sb.append("&redirect_uri=http://localhost:8080/zSpringProject/user/kakaoLoginForm");
+	        sb.append("&client_id=" + clientId);
+	        sb.append("&redirect_uri=" + redirectUri);
 	        sb.append("&code=" + authorize_code);
 	        bw.write(sb.toString());
 	        bw.flush();
 	        
-	        //    결과 코드가 200이라면 성공
 	        int responseCode = conn.getResponseCode();
 	        System.out.println("responseCode : " + responseCode);
 	 
-            //    요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
 	        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 	        String line = "";
 	        String result = "";
@@ -51,7 +60,6 @@ public class KakaoAPI {
 	        }
 	        System.out.println("response body : " + result);
 	        
-	        //    Gson 라이브러리에 포함된 클래스로 JSON파싱 객체 생성 -> 토큰 분리작업
 	        JsonParser parser = new JsonParser();
 	        JsonElement element = parser.parse(result);
 	        
@@ -72,15 +80,12 @@ public class KakaoAPI {
 	}
     
     public HashMap<String, Object> getUserInfo (String access_Token) {
-        //    요청하는 클라이언트마다 가진 정보가 다를 수 있기에 HashMap타입으로 선언
         HashMap<String, Object> userInfo = new HashMap<>();
         String reqURL = "https://kapi.kakao.com/v2/user/me";
         try {
             URL url = new URL(reqURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
-            
-            //    요청에 필요한 Header에 포함될 내용
             conn.setRequestProperty("Authorization", "Bearer " + access_Token);
             
             int responseCode = conn.getResponseCode();
@@ -140,5 +145,4 @@ public class KakaoAPI {
             e.printStackTrace();
         }
     }
-
 }

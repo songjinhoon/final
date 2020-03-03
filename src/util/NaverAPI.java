@@ -21,9 +21,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class NaverAPI {
+	private static String clientId = "yPQYyVMFjdlHoblG9T46";
 	
 	public static String getApiUrl() {
-		String clientId = "yPQYyVMFjdlHoblG9T46";
 		String apiURL = "https://nid.naver.com/oauth2.0/authorize?response_type=code";
 	    String redirectURI;
 		try {

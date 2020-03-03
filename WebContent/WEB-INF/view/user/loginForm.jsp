@@ -50,7 +50,7 @@
 				<p><br> 
 				<input class="w3-button w3-round-large"	style="background-color: #f0e68c; width: 100px;" type="submit" value="enter" />
 		        <a href="https://kauth.kakao.com/oauth/authorize?client_id=de621075efa65c9dc9ec223e759b1e6d&redirect_uri=http://localhost:8080/zSpringProject/user/kakaoLoginForm&response_type=code">
-            		<img src="${pageContext.request.contextPath}/img/kakao_account_login_btn_medium_narrow.png">
+            		<img src="${pageContext.request.contextPath}/img/kakao_account_login_btn_large_narrow.png">
         		</a> 
     	        <a href="${naverApiUrl}">
             		네이버 로그인
