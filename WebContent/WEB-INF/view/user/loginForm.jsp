@@ -52,6 +52,9 @@
 		        <a href="https://kauth.kakao.com/oauth/authorize?client_id=de621075efa65c9dc9ec223e759b1e6d&redirect_uri=http://localhost:8080/zSpringProject/user/kakaoLoginForm&response_type=code">
             		<img src="${pageContext.request.contextPath}/img/kakao_account_login_btn_medium_narrow.png">
         		</a> 
+    	        <a href="${naverApiUrl}">
+            		네이버 로그인
+        		</a> 
 				<br><br>
 			</form>
 		</div>

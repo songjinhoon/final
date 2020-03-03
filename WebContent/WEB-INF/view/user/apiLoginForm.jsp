@@ -55,7 +55,7 @@
 				<br>
 				<table style="color: white;">
 					<tr>
-						<td><p style="color: white;">안녕하세요. 카카오에서 사용하시는 아이디와 닉네임은 그대로 활용하시면되요.<br>추가적으로 아래에 정보를 입력하시고 회원가입을 완료하세요.</p></td>
+						<td><p style="color: white;">안녕하세요.<br>추가적으로 아래에 정보를 입력하시고 회원가입을 완료하세요.</p></td>
 						<td><input type="hidden" name="userId" value="${userId}"></td>
 						<td><input type="hidden" name="userName" value="${userName}"></td>
 					</tr>

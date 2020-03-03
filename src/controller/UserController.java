@@ -1,6 +1,9 @@
 package controller;
 
 import java.io.PrintWriter;
+import java.math.BigInteger;
+import java.net.URLEncoder;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -22,6 +25,7 @@ import model.User;
 import repository.MybatisUserDao;
 import util.Gmail;
 import util.KakaoAPI;
+import util.NaverAPI;
 import util.SHA256;
 
 @SuppressWarnings("serial")
@@ -31,11 +35,11 @@ public class UserController extends ActionAnnotation {
 	public void initProcess(HttpServletRequest request, HttpServletResponse response) {
 
 	}
+	
 	@RequestMapping(value = "kakaoLoginForm", method = RequestMethod.GET)
 	public String kakaoLoginForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
-//		if -> 카카오 계정으로 로그인했을 때, 해당 계정과 일치하는 userId가 존재하는지 체크 후 존재하지 않으면 아래 절차를 받고 존재하면(기존에 가입을 했다면) 바로 세션에 저장후 메인으로 보내줌.
 		String code = request.getParameter("code");
-		String error = request.getParameter("error"); // 나중에 활용할 수 있음
+		String error = request.getParameter("error");
 		request.setAttribute("error", error);
 		if(code != null) {
 			KakaoAPI kakao = new KakaoAPI();
@@ -47,12 +51,24 @@ public class UserController extends ActionAnnotation {
 		    }
 		}
 		
-		return "/WEB-INF/view/user/kakaoLoginForm.jsp";
+		return "/WEB-INF/view/user/apiLoginForm.jsp";
 	}
 	
+	@RequestMapping(value = "naverLoginForm", method = RequestMethod.GET)
+	public String naverLoginForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		NaverAPI naverAPI = new NaverAPI();
+		String access_token = naverAPI.getAccessToken(request.getParameter("code"), request.getParameter("state"));
+		HashMap<String, Object> userInfo = naverAPI.getUserInfo(access_token);
+		request.setAttribute("userId", userInfo.get("userId"));
+		request.setAttribute("userName", userInfo.get("userName"));
+		
+		return "/WEB-INF/view/user/apiLoginForm.jsp";
+	}
 
 	@RequestMapping(value = "loginForm", method = RequestMethod.GET)
 	public String loginForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	    String naverApiUrl = NaverAPI.getApiUrl();
+	    request.setAttribute("naverApiUrl", naverApiUrl);
 		
 		return "/WEB-INF/view/user/loginForm.jsp";
 	}
