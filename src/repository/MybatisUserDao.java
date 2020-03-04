@@ -121,4 +121,22 @@ public class MybatisUserDao extends AbstractRepository{
 		}
 		return checked;
 	}
+	
+	//·Î±×ÀÎ
+	public String Login(User user) {
+		String userId = null;
+		SqlSession sqlSession = getSqlSessionFactory().openSession();
+		String statement = null;
+		
+		try {
+			statement = namespace + ".Login";
+			userId = sqlSession.selectOne(statement, user);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			sqlSession.close();
+		}
+		
+		return userId;
+	}
 }

@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -7,21 +6,29 @@
 	<title>Insert title here</title>
 	<script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+	<script src="${pageContext.request.contextPath}/js/sweetalert/sweetalert.js"></script>
 	<style>
-		label{ color: white; }
+		label{ 
+			color: white; 
+		}
+		
+		.jumbotron {
+			border: solid 10px #745d46; 
+			background-color: #ffffff;
+		}
 	</style>
 	<script>
 		function checkIt(){
 			var userinput = eval("document.userinput");
 			
 			if(!document.user.userId.value){ 
-				alert("ID를 입력하세요"); 
+				swal("ID를 입력하세요"); 
 				user.userId.focus();
 				return false;
 			}
 			
 			if(!document.user.userPasswd.value){
-				alert("비밀번호를 입력하세요"); 
+				swal("비밀번호를 입력하세요"); 
 				user.userPasswd.focus();
 				return false;
 			}
@@ -30,30 +37,41 @@
 </head>
 <body>
 	<div align="center">
-		<p><br>
-		<div class="w3-panel w3-card w3-round-xlarge" style="width: 40%; height: 60%; background-color: #745d46;">
+		<p><br><p><br>
+		<div class="col-lg-4 jumbotron w3-round-xlarge">
 			<form method="post" action="${pageContext.request.contextPath}/user/loginPro" name="user" onsubmit="return checkIt()">
-				<p><br>
 				<table style="color: white;">
 					<tr>
 						<td width="400"><label>ID</label> 
-							<input class="w3-input w3-round" size="8" type="text" name="userId">
+							<input class="w3-input w3-round" size="8" type="text" name="userId" placeholder="ID">
+						</td>
+						<td rowspan="2" width="85">
+						<br> 
+							<div align="center"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+								<input class="w3-button w3-round-large w3-large w3-margin-left" 
+										style="background-color: #745d46; width: 100px;" type="submit" value="Login" />
+							</div>
 						</td>
 					</tr>
+					
 					<tr>
 						<td>
 							<label>Password</label> 
-							<input class="w3-input w3-round" size="15" type="password" name="userPasswd">
+							<input class="w3-input w3-round" size="15" type="password" name="userPasswd" placeholder="Password">
 						</td>
 					</tr>
 				</table>
 				<p><br> 
-				<input class="w3-button w3-round-large"	style="background-color: #f0e68c; width: 100px;" type="submit" value="enter" />
-		        <a href="https://kauth.kakao.com/oauth/authorize?client_id=de621075efa65c9dc9ec223e759b1e6d&redirect_uri=http://localhost:8080/zSpringProject/user/kakaoLoginForm&response_type=code">
-            		<img src="${pageContext.request.contextPath}/img/kakao_account_login_btn_medium_narrow.png">
+				
+		        <a href="https://kauth.kakao.com/oauth/authorize?client_id=de621075efa65c9dc9ec223e759b1e6d&redirect_uri=http://localhost:8080/zSpringProject/user/kakaoLoginForm&response_type=code" class="w3-margin-right">
+            		<img src="${pageContext.request.contextPath}/img/kakao_account_login_btn_large_narrow.png" width="200"/>
         		</a> 
-				<br><br>
+        		
+    	        <a href="${naverApiUrl}">
+    	        	<img src="${pageContext.request.contextPath}/img/Log in with NAVER_Official_Green.PNG" width="200"/>
+        		</a> 
 			</form>
+			<br>
 		</div>
 	</div>
 </body>

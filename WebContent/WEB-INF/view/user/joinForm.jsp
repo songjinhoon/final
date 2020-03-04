@@ -5,55 +5,56 @@
 <title>Join</title>
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="${pageContext.request.contextPath}/js/sweetalert/sweetalert.js"></script>
 </head>
 <script>
 	function checkIt() {
 		var userinput = eval("document.userinput");
 
 		if (!document.user.userId.value) {
-			alert("ID를 입력하세요");
+			swal("ID를 입력하세요");
 			user.userId.focus();
 			return false;
 		}
 
 		if (!document.user.userPasswd.value) {
-			alert("비밀번호를 입력하세요");
+			swal("비밀번호를 입력하세요");
 			user.userPasswd.focus();
 			return false;
 		}
 
 		if (!document.user.userName.value) {
-			alert("이름을 입력하세요");
+			swal("이름을 입력하세요");
 			user.userName.focus();
 			return false;
 		}
 
 		if (!document.user.userEmail.value) {
-			alert("이메일을 입력하세요");
+			swal("이메일을 입력하세요");
 			user.userEmail.focus();
 			return false;
 		}
 
 		if (!document.user.phone1.value) {
-			alert("핸드폰번호를 입력하세요");
+			swal("핸드폰번호를 입력하세요");
 			user.phone1.focus();
 			return false;
 		}
 
 		if (!document.user.phone2.value) {
-			alert("핸드폰번호를 입력하세요");
+			swal("핸드폰번호를 입력하세요");
 			user.phone2.focus();
 			return false;
 		}
 
 		if (!document.user.phone3.value) {
-			alert("핸드폰번호를 입력하세요");
+			swal("핸드폰번호를 입력하세요");
 			user.phone3.focus();
 			return false;
 		}
 
 		if (!document.user.userAddress.value) {
-			alert("주소를 입력하세요");
+			swal("주소를 입력하세요");
 			user.userAddress.focus();
 			return false;
 		}
@@ -65,7 +66,7 @@
 	function openConfirmid(user) {
 		//아이디를 입력했는지 검사
 		if (user.userId.value == "") { //id를 입력하지않은 빈칸일 경우
-			alert("ID를 입력하세요.");
+			swal("ID를 입력하세요.");
 			return;
 		}
 		//URL과 사용자 입력 ID를 조합합니다.
@@ -81,14 +82,19 @@
 
 <style>
 label {
-	color: white;
+	color: #745d46;
 }
+.jumbotron {
+			border: solid 10px #745d46; 
+			background-color:/*  #eee8aa; */ #fffff8;
+		}
 </style>
 <body>
 	<div align="center">
 		<p>
 			<br>
-		<div class="w3-panel w3-card w3-round-xlarge" style="width: 40%; height: 60%; background-color: #745d46;">
+		<!-- <div class="w3-panel w3-card w3-round-xlarge" style="width: 40%; height: 60%; background-color: #745d46;"> -->
+		<div class="col-lg-4 jumbotron w3-panel w3-round-xlarge"  style="width: 70%; height: 60%; ">
 			<form method="post" action="${pageContext.request.contextPath}/user/joinPro" name="user" onsubmit="return checkIt()" autocomplete="off">
 				<p>
 					<br>
@@ -96,7 +102,7 @@ label {
 					<tr>
 						<td width="500">
 							<label>ID</label> <br>
-							<label><input class="w3-input w3-round" size="42" type="text" name="userId" id="userId"></label>
+							<label><input class="w3-input w3-round w3-border" size="42" type="text" name="userId" id="userId"></label>
 							<input type="button" class="w3-button w3-round-large w3-middle" style="background-color: #f0e68c; color:#745d46;"
 								   name="confirm_id" value="ID중복 확인" onclick="openConfirmid(this.form)">
 						</td>
@@ -104,32 +110,32 @@ label {
 					<tr>
 						<td>
 							<label>Password</label> 
-							<input class="w3-input w3-round" size="15" type="password" name="userPasswd"></td>
+							<input class="w3-input w3-round w3-border" size="15" type="password" name="userPasswd"></td>
 					</tr>
 					<tr>
 						<td>
 							<label>Name</label> 
-							<input class="w3-input w3-round" size="8" type="text" name="userName"></td>
+							<input class="w3-input w3-round w3-border" size="8" type="text" name="userName"></td>
 					</tr>
 					<tr>
 						<td>
 							<label>Email</label> 
-							<input class="w3-input w3-round" size="25" type="text" name="userEmail"></td>
+							<input class="w3-input w3-round w3-border" size="25" type="text" name="userEmail"></td>
 					</tr>
 					<tr>
 						<td>
 							<label>Phone</label><br> 
-							<label><input class="w3-input w3-round" size="14" type="text" name="phone1"></label> - 
-							<label><input class="w3-input w3-round" size="15" type="text" name="phone2"></label> - 
-							<label><input class="w3-input w3-round" size="15" type="text" name="phone3"></label>
+							<label><input class="w3-input w3-round w3-border" size="14" type="text" name="phone1"></label> - 
+							<label><input class="w3-input w3-round w3-border" size="15" type="text" name="phone2"></label> - 
+							<label><input class="w3-input w3-round w3-border" size="15" type="text" name="phone3"></label>
 						</td>
 					</tr>
 					<tr>
 						<td>
 							<label>Address</label> 
-							<input class="w3-input w3-round" size="30" type="text" name="userAddress" id="userAddress" placeholder="주소찾기버튼을 눌러주세요."> 
-							<label><input type="text" size="33" class="w3-input w3-round" style=" margin-top: 3px;"id="detailAddress" name="detailAddress" placeholder="상세주소"> </label>
-							<input type="button" class="w3-button w3-round-large w3-middle" style="background-color: #f0e68c; color:#745d46; margin-top: 3px;"onclick="sample3_execDaumPostcode()" value="주소 찾기">
+							<input class="w3-input w3-round w3-border" size="30" type="text" name="userAddress" id="userAddress" placeholder="주소찾기버튼을 눌러주세요."> 
+							<label><input type="text" size="33" class="w3-input w3-round w3-border" style=" margin-top: 3px;"id="detailAddress" name="detailAddress" placeholder="상세주소"> </label>
+							<input type="button" class="w3-button w3-round-large w3-middle w3-border" style="background-color: #f0e68c; color:#745d46; margin-top: 3px;"onclick="sample3_execDaumPostcode()" value="주소 찾기">
 							<br>
 							<div id="wrap" style="display:none;border:1px solid;width:500px;height:300px;margin:5px 0;position:relative">
 								<img src="//t1.daumcdn.net/postcode/resource/images/close.png" id="btnFoldWrap" style="cursor:pointer;position:absolute;right:0px;top:-1px;z-index:1" onclick="foldDaumPostcode()" alt="접기 버튼">

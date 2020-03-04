@@ -29,4 +29,10 @@
 		FROM user 
 		WHERE userId = #{userId}
 	</select>
+	
+	<select id="Login" parameterType="List" resultType="String">
+		SELECT userId
+		FROM user
+		WHERE userId = #{userId} and userPasswd = #{userPasswd}
+	</select>
 </mapper>

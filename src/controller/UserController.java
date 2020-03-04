@@ -1,6 +1,9 @@
 package controller;
 
 import java.io.PrintWriter;
+import java.math.BigInteger;
+import java.net.URLEncoder;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -22,6 +25,7 @@ import model.User;
 import repository.MybatisUserDao;
 import util.Gmail;
 import util.KakaoAPI;
+import util.NaverAPI;
 import util.SHA256;
 
 @SuppressWarnings("serial")
@@ -31,11 +35,21 @@ public class UserController extends ActionAnnotation {
 	public void initProcess(HttpServletRequest request, HttpServletResponse response) {
 
 	}
+	
+	@RequestMapping(value = "selectJoinForm", method = RequestMethod.GET)
+	public String selectJoinForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	    String naverApiUrl = NaverAPI.getApiUrl();
+	    String kakaoApiUrl = KakaoAPI.getApiUrl();
+	    request.setAttribute("naverApiUrl", naverApiUrl);
+		request.setAttribute("kakaoApiUrl", kakaoApiUrl);
+		
+		return "/WEB-INF/view/user/selectJoinForm.jsp";
+	}
+	
 	@RequestMapping(value = "kakaoLoginForm", method = RequestMethod.GET)
 	public String kakaoLoginForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
-//		if -> 카카오 계정으로 로그인했을 때, 해당 계정과 일치하는 userId가 존재하는지 체크 후 존재하지 않으면 아래 절차를 받고 존재하면(기존에 가입을 했다면) 바로 세션에 저장후 메인으로 보내줌.
 		String code = request.getParameter("code");
-		String error = request.getParameter("error"); // 나중에 활용할 수 있음
+		String error = request.getParameter("error");
 		request.setAttribute("error", error);
 		if(code != null) {
 			KakaoAPI kakao = new KakaoAPI();
@@ -47,9 +61,19 @@ public class UserController extends ActionAnnotation {
 		    }
 		}
 		
-		return "/WEB-INF/view/user/kakaoLoginForm.jsp";
+		return "/WEB-INF/view/user/apiLoginForm.jsp";
 	}
 	
+	@RequestMapping(value = "naverLoginForm", method = RequestMethod.GET)
+	public String naverLoginForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		NaverAPI naverAPI = new NaverAPI();
+		String access_token = naverAPI.getAccessToken(request.getParameter("code"), request.getParameter("state"));
+		HashMap<String, Object> userInfo = naverAPI.getUserInfo(access_token);
+		request.setAttribute("userId", userInfo.get("userId"));
+		request.setAttribute("userName", userInfo.get("userName"));
+		
+		return "/WEB-INF/view/user/apiLoginForm.jsp";
+	}
 
 	@RequestMapping(value = "loginForm", method = RequestMethod.GET)
 	public String loginForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -57,10 +81,42 @@ public class UserController extends ActionAnnotation {
 		return "/WEB-INF/view/user/loginForm.jsp";
 	}
 
+	//로그인 처리
 	@RequestMapping(value = "loginPro", method = RequestMethod.POST)
 	public String loginPro(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-		return "/WEB-INF/view/member/loginPro.jsp";
+		
+		response.setContentType("text/html; charset=UTF-8");
+		request.setCharacterEncoding("utf-8");
+		
+		User user = new User();
+		HttpSession session = request.getSession();
+		String userId = request.getParameter("userId");
+		String userPasswd = request.getParameter("userPasswd");
+		user.setUserId(userId);
+		user.setUserPasswd(userPasswd);
+		
+		MybatisUserDao service = MybatisUserDao.getInstance();
+		userId = service.Login(user);
+		
+		request.setAttribute("userId", userId);
+		
+		PrintWriter script = response.getWriter();
+		
+		if(userId == null) {
+			script.println("<script>");
+			script.println("alert('로그인에 실패하셨습니다. \\n다시 로그인해주세요.');");
+			script.println("location.href = '/zSpringProject/user/loginForm'");
+			script.println("</script>");
+			script.close();		
+		}else if(userId != null) {
+			session.setAttribute("userId", userId);
+			script.println("<script>");
+			script.println("alert('로그인되었습니다.');");
+			script.println("location.href = '/zSpringProject/main/main'");
+			script.println("</script>");
+			script.close();
+		}
+		return "";
 	}
 
 	@RequestMapping(value = "logoutForm", method = RequestMethod.GET)
