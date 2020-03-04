@@ -59,6 +59,24 @@
 		}
 
 	}
+	
+	
+	//아이디 중복 여부를 판단
+	function openConfirmid(user) {
+		//아이디를 입력했는지 검사
+		if (user.userId.value == "") { //id를 입력하지않은 빈칸일 경우
+			alert("ID를 입력하세요.");
+			return;
+		}
+		//URL과 사용자 입력 ID를 조합합니다.
+		url = "confirmId?userId=" + user.userId.value; //confirmId.jsp의 id값을 form에 입력한 값으로 저장
+
+		//새로운 윈도우(창)을 엽니다.
+		open(
+				url,
+				"confirm",
+				"toolbar = no, location=no, status=no, scrollbars=no, resizable=no, width=330, height=350");
+	}
 </script>
 
 <style>
@@ -77,8 +95,10 @@ label {
 				<table style="color: white;">
 					<tr>
 						<td width="500">
-							<label>ID</label> 
-							<input class="w3-input w3-round" size="8" type="text" name="userId">
+							<label>ID</label> <br>
+							<label><input class="w3-input w3-round" size="42" type="text" name="userId" id="userId"></label>
+							<input type="button" class="w3-button w3-round-large w3-middle" style="background-color: #f0e68c; color:#745d46;"
+								   name="confirm_id" value="ID중복 확인" onclick="openConfirmid(this.form)">
 						</td>
 					</tr>
 					<tr>
@@ -99,9 +119,9 @@ label {
 					<tr>
 						<td>
 							<label>Phone</label><br> 
-							<input class="w3-round" size="14" type="text" name="phone1"> - 
-							<input class="w3-round" size="15" type="text" name="phone2"> - 
-							<input class="w3-round" size="15" type="text" name="phone3">
+							<label><input class="w3-input w3-round" size="14" type="text" name="phone1"></label> - 
+							<label><input class="w3-input w3-round" size="15" type="text" name="phone2"></label> - 
+							<label><input class="w3-input w3-round" size="15" type="text" name="phone3"></label>
 						</td>
 					</tr>
 					<tr>

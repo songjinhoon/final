@@ -23,4 +23,10 @@
 		SET userEmailCheck=1
 		WHERE userId=#{userId}
 	</update>
+	
+	<select id="getUserIdCheck" parameterType="String" resultType="String">
+		SELECT userId 
+		FROM user 
+		WHERE userId = #{userId}
+	</select>
 </mapper>

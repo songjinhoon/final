@@ -261,4 +261,23 @@ public class UserController extends ActionAnnotation {
 
 		return "redirect:/main/main";
 	}
+	
+	//ID 중복체크 창
+	@RequestMapping(value="confirmId", method = RequestMethod.GET)
+	public String confirmId(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		response.setContentType("text/html; charset=UTF-8");
+		request.setCharacterEncoding("utf-8");
+		
+		String userId = request.getParameter("userId");
+		//System.out.println(userId);
+		MybatisUserDao service = MybatisUserDao.getInstance();
+		
+		int userIdChecked = service.getUserIdCheck(userId);
+		System.out.println(userIdChecked+"-------------------Controller");
+		
+		//el로 사용할 수 있게 보냄
+		request.setAttribute("userIdChecked", userIdChecked);
+		request.setAttribute("userId", userId);
+		return "/WEB-INF/view/user/confirmId.jsp";
+	}
 }
