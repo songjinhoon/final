@@ -89,7 +89,7 @@ label {
 		<p>
 			<br>
 		<div class="w3-panel w3-card w3-round-xlarge" style="width: 40%; height: 60%; background-color: #745d46;">
-			<form method="post" action="${pageContext.request.contextPath}/user/joinPro" name="user" onsubmit="return checkIt()">
+			<form method="post" action="${pageContext.request.contextPath}/user/joinPro" name="user" onsubmit="return checkIt()" autocomplete="off">
 				<p>
 					<br>
 				<table style="color: white;">
@@ -127,7 +127,7 @@ label {
 					<tr>
 						<td>
 							<label>Address</label> 
-							<input class="w3-input w3-round" size="30" type="text" name="userAddress" id="userAddress"> 
+							<input class="w3-input w3-round" size="30" type="text" name="userAddress" id="userAddress" placeholder="주소찾기버튼을 눌러주세요."> 
 							<label><input type="text" size="33" class="w3-input w3-round" style=" margin-top: 3px;"id="detailAddress" name="detailAddress" placeholder="상세주소"> </label>
 							<input type="button" class="w3-button w3-round-large w3-middle" style="background-color: #f0e68c; color:#745d46; margin-top: 3px;"onclick="sample3_execDaumPostcode()" value="주소 찾기">
 							<br>

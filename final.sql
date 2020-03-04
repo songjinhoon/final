@@ -11,6 +11,10 @@ useraddress varchar(60),
 userscore int
 );
 
+SELECT userId 
+		FROM user 
+		WHERE userId = 'dbfla123';
+
 select * from user;
 
 delete from user;
