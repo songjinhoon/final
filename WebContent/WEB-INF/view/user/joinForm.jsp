@@ -155,9 +155,6 @@ label {
 			</form>
 		</div>
 	</div>
-	
-	
-	
 <script>
     // 주소 찾기 찾기 화면을 넣을 element
     var element_wrap = document.getElementById('wrap');

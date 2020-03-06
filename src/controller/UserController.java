@@ -58,6 +58,7 @@ public class UserController extends ActionAnnotation {
 			if (userInfo.get("nickname") != null) {
 				request.setAttribute("userId", userInfo.get("email"));
 		    	request.setAttribute("userName", userInfo.get("nickname"));
+//		    	여기서 디비를 통해 id체크
 		    }
 		}
 		
@@ -71,12 +72,17 @@ public class UserController extends ActionAnnotation {
 		HashMap<String, Object> userInfo = naverAPI.getUserInfo(access_token);
 		request.setAttribute("userId", userInfo.get("userId"));
 		request.setAttribute("userName", userInfo.get("userName"));
+//		여기서 디비를 통해 id 체크
 		
 		return "/WEB-INF/view/user/apiLoginForm.jsp";
 	}
 
 	@RequestMapping(value = "loginForm", method = RequestMethod.GET)
 	public String loginForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String naverApiUrl = NaverAPI.getApiUrl();
+	    String kakaoApiUrl = KakaoAPI.getApiUrl();
+	    request.setAttribute("naverApiUrl", naverApiUrl);
+		request.setAttribute("kakaoApiUrl", kakaoApiUrl);
 		
 		return "/WEB-INF/view/user/loginForm.jsp";
 	}
@@ -152,24 +158,32 @@ public class UserController extends ActionAnnotation {
 		String userPhone = request.getParameter("phone1") + request.getParameter("phone2")
 				+ request.getParameter("phone3");
 		String userAddress = request.getParameter("userAddress") + " " +request.getParameter("detailAddress");
+		System.out.println(userId);
+		System.out.println(userPasswd);
+		System.out.println(userName);
+		System.out.println(userEmail);
+		System.out.println(userEmailHash);
+		System.out.println(userPhone);
+		System.out.println(userAddress);
 
-		MybatisUserDao service = MybatisUserDao.getInstance();
-
-		User user = new User();
-
-		user.setUserId(userId);
-		user.setUserPasswd(userPasswd);
-		user.setUserName(userName);
-		user.setUserEmail(userEmail);
-		user.setUserEmailHash(userEmailHash);
-		user.setUserEmailCheck(userEmailCheck);
-		user.setUserPhone(userPhone);
-		user.setUserAddress(userAddress);
-
-		service.joinUser(user);
-		session.setAttribute("userId", userId);
-
-		return "redirect:/user/joinSendEmail";
+		return "/WEB-INF/view/main/main.jsp";
+//		MybatisUserDao service = MybatisUserDao.getInstance();
+//
+//		User user = new User();
+//
+//		user.setUserId(userId);
+//		user.setUserPasswd(userPasswd);
+//		user.setUserName(userName);
+//		user.setUserEmail(userEmail);
+//		user.setUserEmailHash(userEmailHash);
+//		user.setUserEmailCheck(userEmailCheck);
+//		user.setUserPhone(userPhone);
+//		user.setUserAddress(userAddress);
+//
+//		service.joinUser(user);
+//		session.setAttribute("userId", userId);
+//
+//		return "redirect:/user/joinSendEmail";
 	}
 
 	// 인증메일 보내기

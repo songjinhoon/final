@@ -62,11 +62,9 @@
 					</tr>
 				</table>
 				<p><br> 
-				
-		        <a href="https://kauth.kakao.com/oauth/authorize?client_id=de621075efa65c9dc9ec223e759b1e6d&redirect_uri=http://localhost:8080/zSpringProject/user/kakaoLoginForm&response_type=code" class="w3-margin-right">
+		        <a href="${kakaoApiUrl}">
             		<img src="${pageContext.request.contextPath}/img/kakao_account_login_btn_large_narrow.png" width="200"/>
         		</a> 
-        		
     	        <a href="${naverApiUrl}">
     	        	<img src="${pageContext.request.contextPath}/img/Log in with NAVER_Official_Green.PNG" width="200"/>
         		</a> 
