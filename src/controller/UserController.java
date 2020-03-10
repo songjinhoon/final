@@ -98,13 +98,17 @@ public class UserController extends ActionAnnotation {
 		HttpSession session = request.getSession();
 		String userId = request.getParameter("userId");
 		String userPasswd = request.getParameter("userPasswd");
+		int emailCheck = 0;
+		
 		user.setUserId(userId);
 		user.setUserPasswd(userPasswd);
 		
 		MybatisUserDao service = MybatisUserDao.getInstance();
 		userId = service.Login(user);
+		emailCheck = service.getUserEmailChecked(userId);
 		
 		request.setAttribute("userId", userId);
+		request.setAttribute("emailCheck", emailCheck);
 		
 		PrintWriter script = response.getWriter();
 		
@@ -115,13 +119,21 @@ public class UserController extends ActionAnnotation {
 			script.println("</script>");
 			script.close();		
 		}else if(userId != null) {
-			session.setAttribute("userId", userId);
-			script.println("<script>");
-			script.println("alert('로그인되었습니다.');");
-			script.println("location.href = '/zSpringProject/main/main'");
-			script.println("</script>");
-			script.close();
+			if(emailCheck == 1) {
+				session.setAttribute("userId", userId);
+				script.println("<script>");
+				script.println("location.href = '/zSpringProject/main/main'");
+				script.println("</script>");
+				script.close();
+			}else if(emailCheck != 1){
+				script.println("<script>");
+				script.println("alert('이메일 인증을 완료하지 않았습니다.\\n이메일 인증을 완료해주세요!');");
+				script.println("location.href = '/zSpringProject/main/main'");
+				script.println("</script>");
+				script.close();		
+			}
 		}
+		
 		return "";
 	}
 
@@ -158,6 +170,7 @@ public class UserController extends ActionAnnotation {
 		String userPhone = request.getParameter("phone1") + request.getParameter("phone2")
 				+ request.getParameter("phone3");
 		String userAddress = request.getParameter("userAddress") + " " +request.getParameter("detailAddress");
+		
 		System.out.println(userId);
 		System.out.println(userPasswd);
 		System.out.println(userName);
@@ -166,24 +179,24 @@ public class UserController extends ActionAnnotation {
 		System.out.println(userPhone);
 		System.out.println(userAddress);
 
-		return "/WEB-INF/view/main/main.jsp";
-//		MybatisUserDao service = MybatisUserDao.getInstance();
-//
-//		User user = new User();
-//
-//		user.setUserId(userId);
-//		user.setUserPasswd(userPasswd);
-//		user.setUserName(userName);
-//		user.setUserEmail(userEmail);
-//		user.setUserEmailHash(userEmailHash);
-//		user.setUserEmailCheck(userEmailCheck);
-//		user.setUserPhone(userPhone);
-//		user.setUserAddress(userAddress);
-//
-//		service.joinUser(user);
-//		session.setAttribute("userId", userId);
-//
-//		return "redirect:/user/joinSendEmail";
+		/* return "/WEB-INF/view/main/main.jsp"; */
+		MybatisUserDao service = MybatisUserDao.getInstance();
+
+		User user = new User();
+
+		user.setUserId(userId);
+		user.setUserPasswd(userPasswd);
+		user.setUserName(userName);
+		user.setUserEmail(userEmail);
+		user.setUserEmailHash(userEmailHash);
+		user.setUserEmailCheck(userEmailCheck);
+		user.setUserPhone(userPhone);
+		user.setUserAddress(userAddress);
+
+		service.joinUser(user);
+		session.setAttribute("userId", userId);
+
+		return "redirect:/user/joinSendEmail";
 	}
 
 	// 인증메일 보내기
@@ -320,7 +333,6 @@ public class UserController extends ActionAnnotation {
 			script.println("</script>");
 			script.close();		
 		}else {
-			
 			PrintWriter script = response.getWriter();
 			script.println("<script>");
 			script.println("alert('유효하지 않은 코드입니다.');");
@@ -333,10 +345,12 @@ public class UserController extends ActionAnnotation {
 	}
 	
 	//ID 중복체크 창
-	@RequestMapping(value="confirmId", method = RequestMethod.GET)
-	public String confirmId(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value="idCheck", method = RequestMethod.GET)
+	public String idCheck(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		response.setContentType("text/html; charset=UTF-8");
 		request.setCharacterEncoding("utf-8");
+		
+		
 		
 		String userId = request.getParameter("userId");
 		//System.out.println(userId);
@@ -348,6 +362,16 @@ public class UserController extends ActionAnnotation {
 		//el로 사용할 수 있게 보냄
 		request.setAttribute("userIdChecked", userIdChecked);
 		request.setAttribute("userId", userId);
-		return "/WEB-INF/view/user/confirmId.jsp";
+		return "/WEB-INF/view/user/idCheck.jsp";
+	}
+	// 마이페이지
+	@RequestMapping(value = "myPage", method = RequestMethod.GET)
+	public String myPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		String userId = request.getParameter("userId");
+				
+		request.setAttribute("userId", userId);
+				
+		return "/WEB-INF/view/user/myPage.jsp";
 	}
 }

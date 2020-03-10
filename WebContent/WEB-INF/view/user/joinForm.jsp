@@ -22,6 +22,12 @@
 			user.userPasswd.focus();
 			return false;
 		}
+		
+		if (!document.user.userPasswdCheck.value) {
+			swal("비밀번호를 확인 해주세요.");
+			user.userPasswd.focus();
+			return false;
+		}
 
 		if (!document.user.userName.value) {
 			swal("이름을 입력하세요");
@@ -61,23 +67,25 @@
 
 	}
 	
-	
+
 	//아이디 중복 여부를 판단
-	function openConfirmid(user) {
+	function openidCheck(user) {
 		//아이디를 입력했는지 검사
 		if (user.userId.value == "") { //id를 입력하지않은 빈칸일 경우
 			swal("ID를 입력하세요.");
 			return;
 		}
 		//URL과 사용자 입력 ID를 조합합니다.
-		url = "confirmId?userId=" + user.userId.value; //confirmId.jsp의 id값을 form에 입력한 값으로 저장
+		url = "idCheck?userId=" + user.userId.value; //idCheck.jsp의 id값을 form에 입력한 값으로 저장
 
 		//새로운 윈도우(창)을 엽니다.
 		open(
 				url,
-				"confirm",
+				"idCheck",
 				"toolbar = no, location=no, status=no, scrollbars=no, resizable=no, width=330, height=350");
 	}
+	 
+
 </script>
 
 <style>
@@ -91,59 +99,65 @@ label {
 </style>
 <body>
 	<div align="center">
-		<p>
-			<br>
-		<!-- <div class="w3-panel w3-card w3-round-xlarge" style="width: 40%; height: 60%; background-color: #745d46;"> -->
-		<div class="col-lg-4 jumbotron w3-panel w3-round-xlarge"  style="width: 70%; height: 60%; ">
+		<p>	<br>
+		<div class="col-lg-4 jumbotron w3-panel w3-round-xlarge"  style="width:70%;">
 			<form method="post" action="${pageContext.request.contextPath}/user/joinPro" name="user" onsubmit="return checkIt()" autocomplete="off">
 				<p>
 					<br>
 				<table style="color: white;">
 					<tr>
-						<td width="500">
+						<td width="100%">
 							<label>ID</label> <br>
-							<label><input class="w3-input w3-round w3-border" size="42" type="text" name="userId" id="userId"></label>
+							<label><input class="w3-input w3-round w3-border" size="35" type="text" name="userId" id="userId"></label>
 							<input type="button" class="w3-button w3-round-large w3-middle" style="background-color: #f0e68c; color:#745d46;"
-								   name="confirm_id" value="ID중복 확인" onclick="openConfirmid(this.form)">
+								   name="confirm_id" value="ID중복 확인" onclick="openidCheck(this.form)">
 						</td>
 					</tr>
+					<tr><td> <div id="userIdCheck"></div></td></tr>
 					<tr>
 						<td>
-							<label>Password</label> 
-							<input class="w3-input w3-round w3-border" size="15" type="password" name="userPasswd"></td>
+							<label class="w3-margin-right">Password</label> 
+							<input class="w3-input w3-round w3-border" size="22" type="password" name="userPasswd" id="userPasswd">
+						</td>
+						
 					</tr>
+				
+		
 					<tr>
 						<td>
 							<label>Name</label> 
 							<input class="w3-input w3-round w3-border" size="8" type="text" name="userName"></td>
 					</tr>
+					<tr><td> s</td></tr>
 					<tr>
 						<td>
 							<label>Email</label> 
 							<input class="w3-input w3-round w3-border" size="25" type="text" name="userEmail"></td>
 					</tr>
+					<tr><td> s</td></tr>
 					<tr>
 						<td>
 							<label>Phone</label><br> 
-							<label><input class="w3-input w3-round w3-border" size="14" type="text" name="phone1"></label> - 
-							<label><input class="w3-input w3-round w3-border" size="15" type="text" name="phone2"></label> - 
-							<label><input class="w3-input w3-round w3-border" size="15" type="text" name="phone3"></label>
+							<label><input class="w3-input w3-round w3-border" size="12" type="text" name="phone1"></label> - 
+							<label><input class="w3-input w3-round w3-border" size="12" type="text" name="phone2"></label> - 
+							<label><input class="w3-input w3-round w3-border" size="12" type="text" name="phone3"></label>
 						</td>
 					</tr>
+					<tr><td> s</td></tr>
 					<tr>
 						<td>
 							<label>Address</label> 
 							<input class="w3-input w3-round w3-border" size="30" type="text" name="userAddress" id="userAddress" placeholder="주소찾기버튼을 눌러주세요."> 
-							<label><input type="text" size="33" class="w3-input w3-round w3-border" style=" margin-top: 3px;"id="detailAddress" name="detailAddress" placeholder="상세주소"> </label>
+							<label><input type="text" size="37" class="w3-input w3-round w3-border" style=" margin-top: 3px;"id="detailAddress" name="detailAddress" placeholder="상세주소"> </label>
 							<input type="button" class="w3-button w3-round-large w3-middle w3-border" style="background-color: #f0e68c; color:#745d46; margin-top: 3px;"onclick="sample3_execDaumPostcode()" value="주소 찾기">
 							<br>
-							<div id="wrap" style="display:none;border:1px solid;width:500px;height:300px;margin:5px 0;position:relative">
+							<div id="wrap" style="display:none;border:1px solid;width:100%;height:300px;margin:5px 0;position:relative">
 								<img src="//t1.daumcdn.net/postcode/resource/images/close.png" id="btnFoldWrap" style="cursor:pointer;position:absolute;right:0px;top:-1px;z-index:1" onclick="foldDaumPostcode()" alt="접기 버튼">
 							</div>
 						</td>
 					</tr>
 				</table>
-				<div id="wrap" style="display:none;border:1px solid;width:500px;height:300px;margin:5px 0;position:relative">
+				<div id="wrap" style="display:none;border:1px solid;width:100%;height:300px;margin:5px 0;position:relative">
 					<img src="//t1.daumcdn.net/postcode/resource/images/close.png" id="btnFoldWrap" style="cursor:pointer;position:absolute;right:0px;top:-1px;z-index:1" onclick="foldDaumPostcode()" alt="접기 버튼">
 				</div>
 
@@ -155,6 +169,9 @@ label {
 			</form>
 		</div>
 	</div>
+	
+	
+	
 <script>
     // 주소 찾기 찾기 화면을 넣을 element
     var element_wrap = document.getElementById('wrap');
@@ -216,5 +233,4 @@ label {
     }
 </script>
 </body>
-
 </html>
