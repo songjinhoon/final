@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ErrorMessages;
+
 import action.ActionAnnotation;
 import action.RequestMapping;
 import action.RequestMapping.RequestMethod;
@@ -68,13 +70,41 @@ public class UserController extends ActionAnnotation {
 	@RequestMapping(value = "naverLoginForm", method = RequestMethod.GET)
 	public String naverLoginForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		NaverAPI naverAPI = new NaverAPI();
-		String access_token = naverAPI.getAccessToken(request.getParameter("code"), request.getParameter("state"));
-		HashMap<String, Object> userInfo = naverAPI.getUserInfo(access_token);
-		request.setAttribute("userId", userInfo.get("userId"));
-		request.setAttribute("userName", userInfo.get("userName"));
-//		여기서 디비를 통해 id 체크
-		
-		return "/WEB-INF/view/user/apiLoginForm.jsp";
+		String code = request.getParameter("code");
+		String state = request.getParameter("state");
+		String error = request.getParameter("error");
+		String error_description = request.getParameter("error_description");
+//		네이버 로그인 정보와 정보제공 동의 과정 완료 및 실패
+		if(code != null && state != null){
+			String access_token = naverAPI.getAccessToken(code, state);
+			HashMap<String, String> userInfo = naverAPI.getUserInfo(access_token);
+			request.setAttribute("userId", userInfo.get("userId"));
+			request.setAttribute("userName", userInfo.get("userName"));
+//			토큰 삭제
+			String result = naverAPI.deleteAccessToken(access_token);
+			if(result.equals("success")){
+				System.out.println("- 토큰 삭제 성공 -");
+			}else{
+				System.out.println("- 토큰 삭제 실패 -");
+			}
+//			여기서 디비를 통해 ID체크하고 기존에 가입을 했었던 사람이라면 메인으로 보내주고 아니면 apiloginform ㅇㅋ?
+			MybatisUserDao service = MybatisUserDao.getInstance();
+			System.out.println("userId: " + userInfo.get("userId"));
+			System.out.println("userName: " + userInfo.get("userName"));
+			int check = service.getUserIdCheck(userInfo.get("userId"));
+//			기존 아이디가 존재하지않는다면
+			if(check == 0){
+				return "/WEB-INF/view/user/apiLoginForm.jsp";
+			}else{
+				return "redirect:/main/main";
+			}
+		}else{
+			System.out.println("네이버 아이디 로그인 인증 실패");
+			System.out.println("에러코드: " + error);
+			System.out.println("에러메시지: " + error_description);
+			
+			return "redirect:/main/main";
+		}
 	}
 
 	@RequestMapping(value = "loginForm", method = RequestMethod.GET)
@@ -145,9 +175,7 @@ public class UserController extends ActionAnnotation {
 	// 회원가입 처리 (이메일 인증)
 	@RequestMapping(value = "joinPro", method = RequestMethod.POST)
 	public String joinPro(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
 		request.setCharacterEncoding("utf-8");
-
 		HttpSession session = request.getSession();
 		String userId = request.getParameter("userId");
 		String userPasswd = request.getParameter("userPasswd");
@@ -158,32 +186,21 @@ public class UserController extends ActionAnnotation {
 		String userPhone = request.getParameter("phone1") + request.getParameter("phone2")
 				+ request.getParameter("phone3");
 		String userAddress = request.getParameter("userAddress") + " " +request.getParameter("detailAddress");
-		System.out.println(userId);
-		System.out.println(userPasswd);
-		System.out.println(userName);
-		System.out.println(userEmail);
-		System.out.println(userEmailHash);
-		System.out.println(userPhone);
-		System.out.println(userAddress);
 
-		return "/WEB-INF/view/main/main.jsp";
-//		MybatisUserDao service = MybatisUserDao.getInstance();
-//
-//		User user = new User();
-//
-//		user.setUserId(userId);
-//		user.setUserPasswd(userPasswd);
-//		user.setUserName(userName);
-//		user.setUserEmail(userEmail);
-//		user.setUserEmailHash(userEmailHash);
-//		user.setUserEmailCheck(userEmailCheck);
-//		user.setUserPhone(userPhone);
-//		user.setUserAddress(userAddress);
-//
-//		service.joinUser(user);
-//		session.setAttribute("userId", userId);
-//
-//		return "redirect:/user/joinSendEmail";
+		MybatisUserDao service = MybatisUserDao.getInstance();
+		User user = new User();
+		user.setUserId(userId);
+		user.setUserPasswd(userPasswd);
+		user.setUserName(userName);
+		user.setUserEmail(userEmail);
+		user.setUserEmailHash(userEmailHash);
+		user.setUserEmailCheck(userEmailCheck);
+		user.setUserPhone(userPhone);
+		user.setUserAddress(userAddress);
+		service.joinUser(user);
+		session.setAttribute("userId", userId);
+
+		return "redirect:/user/joinSendEmail";
 	}
 
 	// 인증메일 보내기

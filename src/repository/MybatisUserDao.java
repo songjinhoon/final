@@ -99,20 +99,19 @@ public class MybatisUserDao extends AbstractRepository{
 		SqlSession sqlSession = getSqlSessionFactory().openSession();
 		String statement = null;
 		String userIdCheck = null;
-		// System.out.println(userId);
 		try {
 			statement = namespace + ".getUserIdCheck";
 			userIdCheck = sqlSession.selectOne(statement, userId);
-			System.out.println(userIdCheck);
-			System.out.println(userId);
+			if(userIdCheck == null){
+				return checked;
+			}
 			if(!userIdCheck.equals(userId))
-			{
+			{    
 				checked = 0;
 			}else {
 				checked = 1;
 			}
 			System.out.println(checked);
-			
 			return checked;
 		}catch (Exception e) {
 			e.printStackTrace();
