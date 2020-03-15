@@ -37,8 +37,9 @@
                         </div>
                         <div class="col-lg-6 col-md-4 ">
                             <div class="social_media_links">
+	                            <a href="${pageContext.request.contextPath}/chat/chatForm"><i class="fa fa-user-circle"></i></a>
                                 <a href="${pageContext.request.contextPath}/user/loginForm"><i class="fa fa-user-circle"></i></a> 
-                                <a href="${pageContext.request.contextPath}/user/selectJoinForm"><i class="fa fa-user-plus"></i></a> 
+                                <a href="${pageContext.request.contextPath}/user/selectJoinForm"><i class="fa fa-user-plus"></i></a>
                                 <a href="#"><i class="fa fa-unlock"></i></a>
                                 <a href="#"><i class="fa fa-lock"></i></a>
                             </div>

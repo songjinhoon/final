@@ -44,30 +44,18 @@ public class NaverAPI {
 		return apiUrl;
 	}
 	
-    public String getAccessToken (String param1, String param2) throws Exception {
-		String code = param1;
-		String state = param2;
-		String redirectURI = URLEncoder.encode("http://localhost:8080/zSpringProject/user/naverLoginForm","UTF-8");
-	    String apiURL;
-	    apiURL = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&";
-	    apiURL += "client_id=" + clientId;
-	    apiURL += "&client_secret=" + clientSecret;
-	    apiURL += "&redirect_uri=" + redirectURI;
-	    apiURL += "&code=" + code;
-	    apiURL += "&state=" + state;
-		String access_token = ""; // 접근 토큰
-		String refresh_token = ""; // 갱신 토큰
-				
+	public JsonObject getJsonObject(String apiUrl){
+		JsonObject jsonObj = null;
 		try {
-			URL url = new URL(apiURL);
-			HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-			conn.setRequestMethod("GET");
-			int responseCode = conn.getResponseCode();
+			URL url = new URL(apiUrl);
+			HttpURLConnection con = (HttpURLConnection)url.openConnection();
+			con.setRequestMethod("GET");
+			int responseCode = con.getResponseCode();
 			BufferedReader br;
 			if(responseCode == 200) { // 정상
-			    br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			    br = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			} else { // 에러
-			    br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+			    br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
 			}
 			String inputLine;
 			StringBuffer res = new StringBuffer();
@@ -75,19 +63,38 @@ public class NaverAPI {
 				res.append(inputLine);
 			}
 			br.close();
-			if(responseCode == 200) {
-				System.out.println(res.toString());
+			if(responseCode == 200){
+				System.out.println("res: " + res.toString());
 				JsonParser parsing = new JsonParser();
 				Object obj = parsing.parse(res.toString());
-				JsonObject jsonObj = (JsonObject) obj;
-				
-		        access_token = jsonObj.getAsJsonObject().get("access_token").getAsString();
-		        refresh_token = jsonObj.getAsJsonObject().get("refresh_token").getAsString();
+				jsonObj = (JsonObject) obj;
+				return jsonObj;
 			}
-		}catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return jsonObj;
+	}
+	
+    public String getAccessToken (String param1, String param2) throws Exception {
+		String code = param1;
+		String state = param2;
+		String redirectURI = URLEncoder.encode("http://localhost:8080/zSpringProject/user/naverLoginForm","UTF-8");
+	    String apiUrl;
+	    apiUrl = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&";
+	    apiUrl += "client_id=" + clientId;
+	    apiUrl += "&client_secret=" + clientSecret;
+	    apiUrl += "&redirect_uri=" + redirectURI;
+	    apiUrl += "&code=" + code;
+	    apiUrl += "&state=" + state;
+		String access_token = ""; // 접근 토큰
+		String refresh_token = ""; // 갱신 토큰
 		
+		JsonObject jsonObj = getJsonObject(apiUrl);
+		if(jsonObj != null){
+	        access_token = jsonObj.getAsJsonObject().get("access_token").getAsString();
+	        refresh_token = jsonObj.getAsJsonObject().get("refresh_token").getAsString();
+		}
 		return access_token;
 	}
     
@@ -101,36 +108,11 @@ public class NaverAPI {
 	    apiUrl += "&service_provider=NAVER";
 	    String result = null;
 	    
-		try {
-			URL url = new URL(apiUrl);
-			HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-			conn.setRequestMethod("GET");
-			int responseCode = conn.getResponseCode();
-			BufferedReader br;
-			if(responseCode == 200) { // 정상
-			    br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			} else { // 에러
-			    br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-			}
-			String inputLine;
-			StringBuffer res = new StringBuffer();
-			while ((inputLine = br.readLine()) != null) {
-				res.append(inputLine);
-			}
-			br.close();
-			if(responseCode == 200) {
-				System.out.println(res.toString());
-				JsonParser parsing = new JsonParser();
-				Object obj = parsing.parse(res.toString());
-				JsonObject jsonObj = (JsonObject) obj;
-				
-		        access_token = jsonObj.getAsJsonObject().get("access_token").getAsString();
-		        result = jsonObj.getAsJsonObject().get("result").getAsString();
-			}
-		}catch (Exception e) {
-			e.printStackTrace();
+	    JsonObject jsonObj = getJsonObject(apiUrl);
+		if(jsonObj != null){
+	        access_token = jsonObj.getAsJsonObject().get("access_token").getAsString();
+	        result = jsonObj.getAsJsonObject().get("result").getAsString();
 		}
-		
 		return result;
     }
     
@@ -139,7 +121,6 @@ public class NaverAPI {
         String header = "Bearer " + access_Token;
         String apiURL = "https://openapi.naver.com/v1/nid/me";
         try {
-        	
         	URL url = new URL(apiURL);
         	HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         	conn.setRequestMethod("GET");
