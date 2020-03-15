@@ -3,36 +3,36 @@
 
 <mapper namespace="mybatis.UserMapper">
 	<insert id="joinUser" parameterType="User">
-			INSERT INTO user
+			INSERT INTO user1
 			VALUES (#{userId}, #{userPasswd}, #{userName}, #{userEmail}, #{userEmailHash},
 			 #{userEmailCheck}, #{userPhone}, #{userAddress},0)
 	</insert>
 	
 	<select id="getUserEmailChecked" resultType="int" parameterType="String">
-		SELECT userEmailCheck FROM user 
+		SELECT userEmailCheck FROM user1
 		WHERE userId = #{userId}
 	</select>
 	
 	<select id="getUserEmail" resultType="String" parameterType="String">
-		SELECT userEmail FROM user
+		SELECT userEmail FROM user1
 		WHERE userId = #{userId}
 	</select>
 	
 	<update id="setUserEmailChecked" parameterType="String">
-		UPDATE user
+		UPDATE user1
 		SET userEmailCheck=1
 		WHERE userId=#{userId}
 	</update>
 	
 	<select id="getUserIdCheck" parameterType="String" resultType="String">
-		SELECT userId 
-		FROM user 
+		SELECT userId
+		FROM user1 
 		WHERE userId = #{userId}
 	</select>
 	
 	<select id="Login" parameterType="List" resultType="String">
 		SELECT userId
-		FROM user
+		FROM user1
 		WHERE userId = #{userId} and userPasswd = #{userPasswd}
 	</select>
 </mapper>

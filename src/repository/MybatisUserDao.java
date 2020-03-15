@@ -75,22 +75,18 @@ public class MybatisUserDao extends AbstractRepository{
 	}
 	
 	//이메일 인증 확인
-	public int setUserEmailChecked(String userId) {
-		int checked = 0;
+	public void setUserEmailChecked(String userId) {
 		SqlSession sqlSession = getSqlSessionFactory().openSession();
 		String statement = null;
 		try {
 			statement = namespace + ".setUserEmailChecked";
-			checked = sqlSession.selectOne(statement, userId);
-			System.out.println(checked);
+			sqlSession.update(statement, userId);
 			sqlSession.commit();
-			return checked;
 		}catch (Exception e) {
 			e.printStackTrace();
 		}finally {
 			sqlSession.close();
 		}
-		return checked;
 	}
 	
 	//ID중복 조회
@@ -98,13 +94,20 @@ public class MybatisUserDao extends AbstractRepository{
 		int checked = 0;
 		SqlSession sqlSession = getSqlSessionFactory().openSession();
 		String statement = null;
-		String userIdCheck = null;
+		String userIdCheck = "";
 		// System.out.println(userId);
 		try {
 			statement = namespace + ".getUserIdCheck";
 			userIdCheck = sqlSession.selectOne(statement, userId);
+			
+			if(userIdCheck == null) {
+				userIdCheck = "";
+			}
+			
 			System.out.println(userIdCheck);
 			System.out.println(userId);
+			
+			
 			if(!userIdCheck.equals(userId))
 			{
 				checked = 0;

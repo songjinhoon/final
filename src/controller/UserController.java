@@ -126,6 +126,7 @@ public class UserController extends ActionAnnotation {
 				script.println("</script>");
 				script.close();
 			}else if(emailCheck != 1){
+				session.setAttribute("userId", userId);
 				script.println("<script>");
 				script.println("alert('이메일 인증을 완료하지 않았습니다.\\n이메일 인증을 완료해주세요!');");
 				script.println("location.href = '/zSpringProject/main/main'");
@@ -301,16 +302,43 @@ public class UserController extends ActionAnnotation {
 
 		HttpSession session = request.getSession();
 		String code = request.getParameter("code");
-		
+
+		String userId = null;
+		System.out.println("joinEmailCheckPro-----userId : " + userId);
 		System.out.println(code);
 		
-		String userId = null;
 		MybatisUserDao service = MybatisUserDao.getInstance();
+		
 		
 		if(session.getAttribute("userId") != null) {
 			userId = (String)session.getAttribute("userId");
-		}else if(userId == null) {
-
+			
+			System.out.println("userId----------------------------" + userId);
+			String userEmail = service.getUserEmail(userId);
+			
+			//인증코드와 디비에 저장된 코드 확인
+			boolean rightCode = (new SHA256().getSHA256(userEmail).equals(code)) ? true : false;
+			System.out.println(rightCode);
+			
+			if(rightCode == true) {
+				System.out.println("joinEmailCheckPro안에 있는 userId의 값 : "+userId);
+				service.setUserEmailChecked(userId);
+				
+				PrintWriter script = response.getWriter();
+				script.println("<script>");
+				script.println("alert('인증에 성공했습니다.');");
+				script.println("location.href = '/zSpringProject/main/main'");
+				script.println("</script>");
+				script.close();		
+			}else if(rightCode == false) {
+				PrintWriter script = response.getWriter();
+				script.println("<script>");
+				script.println("alert('유효하지 않은 코드입니다.');");
+				script.println("location.href = '/zSpringProject/main/main'");
+				script.println("</script>");
+				script.close();		
+			}
+		}else if(session.getAttribute("userId") == null) {
 			PrintWriter script = response.getWriter();
 			script.println("<script>");
 			script.println("alert('로그인을 해주세요.');");
@@ -319,29 +347,8 @@ public class UserController extends ActionAnnotation {
 			script.close();
 		}
 		
-		String userEmail = service.getUserEmail(userId);
-		
-		//인증코드와 디비에 저장된 코드 확인
-		boolean rightCode = (new SHA256().getSHA256(userEmail).equals(code)) ? true : false;
-		System.out.println(rightCode);
-		if(rightCode == true) {
-			service.setUserEmailChecked(userId);
-			PrintWriter script = response.getWriter();
-			script.println("<script>");
-			script.println("alert('인증에 성공했습니다.');");
-			script.println("location.href = '/zSpringProject/main/main'");
-			script.println("</script>");
-			script.close();		
-		}else {
-			PrintWriter script = response.getWriter();
-			script.println("<script>");
-			script.println("alert('유효하지 않은 코드입니다.');");
-			script.println("location.href = '/zSpringProject/main/main'");
-			script.println("</script>");
-			script.close();		
-		}
 
-		return "redirect:/main/main";
+		return "";
 	}
 	
 	//ID 중복체크 창
@@ -364,6 +371,7 @@ public class UserController extends ActionAnnotation {
 		request.setAttribute("userId", userId);
 		return "/WEB-INF/view/user/idCheck.jsp";
 	}
+	
 	// 마이페이지
 	@RequestMapping(value = "myPage", method = RequestMethod.GET)
 	public String myPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -374,4 +382,26 @@ public class UserController extends ActionAnnotation {
 				
 		return "/WEB-INF/view/user/myPage.jsp";
 	}
+	
+	// 회원 정보 수정 페이지
+	@RequestMapping(value = "userModifyForm", method = RequestMethod.GET)
+	public String userModifyForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		String userId = request.getParameter("userId");
+				
+		request.setAttribute("userId", userId);
+				
+		return "/WEB-INF/view/user/userModifyForm.jsp";
+	}
+	
+	// 구매 네약
+		@RequestMapping(value = "saleList", method = RequestMethod.GET)
+		public String saleList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+			String userId = request.getParameter("userId");
+					
+			request.setAttribute("userId", userId);
+					
+			return "/WEB-INF/view/user/saleList.jsp";
+		}
 }
