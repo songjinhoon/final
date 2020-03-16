@@ -97,6 +97,7 @@ public class UserController extends ActionAnnotation {
 		User user = new User();
 		HttpSession session = request.getSession();
 		String userId = request.getParameter("userId");
+	
 		String userPasswd = request.getParameter("userPasswd");
 		int emailCheck = 0;
 
@@ -126,7 +127,7 @@ public class UserController extends ActionAnnotation {
 				script.close();
 			} else if (emailCheck != 1) {
 				script.println("<script>");
-				script.println("alert('이메일 인증을 완료하지 않았습니다.\\n 인증 완료 후 다시 로그인해주세요.');");
+				script.println("alert('이메일 인증을 완료하지 않았습니다.\\n인증 완료 후 다시 로그인해주세요.');");
 				script.println("location.href = '/zSpringProject/user/loginForm'");
 				script.println("</script>");
 				script.close();
@@ -139,12 +140,6 @@ public class UserController extends ActionAnnotation {
 	@RequestMapping(value = "logoutForm", method = RequestMethod.GET)
 	public String logout(HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
-		/*
-		KakaoAPI kakao = new KakaoAPI();
-		kakao.kakaoLogout((String) session.getAttribute("access_Token"));
-		session.removeAttribute("access_Token");
-		session.removeAttribute("userId");
-		*/
 		session.invalidate();
 		return "/WEB-INF/view/user/loginForm.jsp";
 	}
@@ -152,7 +147,6 @@ public class UserController extends ActionAnnotation {
 	// 회원가입 폼
 	@RequestMapping(value = "joinForm", method = RequestMethod.GET)
 	public String joinForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
 		return "/WEB-INF/view/user/joinForm.jsp";
 	}
 

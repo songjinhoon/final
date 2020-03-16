@@ -24,8 +24,20 @@
 			<div style="float: left; width:25%;">
 				<label>나의 온도</label><br><br>
 				
-				<c:if test="${userScore <= 15 }">
+				<c:if test="${userScore <= 25 && userScore >= 0}">
 				<i class="fas fa-thermometer-empty  fa-4x"></i>
+				</c:if>
+				<c:if test="${userScore <= 50 && userScore >= 26}">
+				<i class="fas fa-thermometer-quarter fa-4x"></i>
+				</c:if>
+				<c:if test="${userScore <= 75 && userScore >= 51}">
+				<i class="fas fa-thermometer-half  fa-4x"></i>
+				</c:if>
+				<c:if test="${userScore <= 99 && userScore >= 76}">
+				<i class="fas fa-thermometer-three-quarters  fa-4x"></i>
+				</c:if>
+				<c:if test="${userScore == 100 }">
+				<i class="fas fa-thermometer-full  fa-4x"></i>
 				</c:if>
 				<br/>
 				${userScore } ℃

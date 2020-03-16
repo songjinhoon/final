@@ -13,7 +13,7 @@ userscore number not null
 
 drop table user1;
 
-update user1 set userscore=15;
+update user1 set userscore=60;
 
 select * from user1;
 
