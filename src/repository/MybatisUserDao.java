@@ -63,6 +63,7 @@ public class MybatisUserDao extends AbstractRepository{
 		
 		try {
 			statement = namespace + ".getUserEmail";
+			System.out.println(userId + "getUserEmail");
 			userEmail = sqlSession.selectOne(statement, userId);
 			
 		}catch (Exception e) {
@@ -141,5 +142,24 @@ public class MybatisUserDao extends AbstractRepository{
 		}
 		
 		return userId;
+	}
+	
+	//나의 온도 조회
+	public int getUserScore(String userId) {
+		
+		int userScore = 0;
+		SqlSession sqlSession = getSqlSessionFactory().openSession();
+		String statement = null;
+		try {
+			statement = namespace + ".getUserScore";
+			userScore = sqlSession.selectOne(statement, userId);
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			sqlSession.close();
+		}
+		
+		return userScore;
 	}
 }
