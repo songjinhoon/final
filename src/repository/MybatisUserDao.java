@@ -56,23 +56,23 @@ public class MybatisUserDao extends AbstractRepository{
 	}
 
 	//회원 이메일 조회
-	public String getUserEmail(String userId) {
-		String userEmail = null;
-		SqlSession sqlSession = getSqlSessionFactory().openSession();
-		String statement = null;
-		
-		try {
-			statement = namespace + ".getUserEmail";
-			userEmail = sqlSession.selectOne(statement, userId);
-			
-		}catch (Exception e) {
-			e.printStackTrace();
-		}finally {
-			sqlSession.close();
-		}
-		
-		return userEmail;
-	}
+    public String getUserEmail(String userId) {
+	      String userEmail = null;
+	      SqlSession sqlSession = getSqlSessionFactory().openSession();
+	      String statement = null;
+	      
+	      try {
+	         statement = namespace + ".getUserEmail";
+	         userEmail = sqlSession.selectOne(statement, userId);
+	         
+	      }catch (Exception e) {
+	         e.printStackTrace();
+	      }finally {
+	         sqlSession.close();
+	      }
+	      
+	      return userEmail;
+    }
 	
 	//이메일 인증 확인
 	public int setUserEmailChecked(String userId) {
@@ -126,7 +126,6 @@ public class MybatisUserDao extends AbstractRepository{
 		String userId = null;
 		SqlSession sqlSession = getSqlSessionFactory().openSession();
 		String statement = null;
-		
 		try {
 			statement = namespace + ".Login";
 			userId = sqlSession.selectOne(statement, user);
@@ -135,7 +134,21 @@ public class MybatisUserDao extends AbstractRepository{
 		}finally {
 			sqlSession.close();
 		}
-		
 		return userId;
+	}
+	
+	public User getUserInfo(String userId){
+		SqlSession sqlSession = getSqlSessionFactory().openSession();
+		String statement = null;
+		User user = null;
+		try{
+			statement = namespace + ".getUserInfo";
+			user = sqlSession.selectOne(statement, userId);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally {
+			sqlSession.close();
+		}
+		return user;
 	}
 }

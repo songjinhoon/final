@@ -21,7 +21,7 @@
 		.contentform .col-sm-6 { margin-bottom: 10px; }
 		#inputMessage { width: 100%; }
 		.me { background-color: yellow; border-radius: 10px; }
-		.you { background-color: blue; border-radius: 10px; }
+		.you { background-color: #ACFA58; border-radius: 10px; }
 		.button { width: 100%; background-color: #FACC2E;}
 	</style>
 </head>
@@ -69,17 +69,28 @@
 		webSocket.onmessage = function(event){ onMessage(event) };
 		
 		function onMessage(event){
-			textarea.innerHTML += "<div class='col-sm-6 you'>" + event.data + "</div>";
-			textarea.innerHTML += "<div class='col-sm-6'>";
-			textarea.scrollTop = textarea.scrollHeight;
+			var check = event.data;
+			if(check.startsWith('[djalwjc1542]')){
+				check = check.split(']');
+				for(var i in check){
+					if(i == 1){
+						textarea.innerHTML += "<div class='container-fluid' style='padding: 0;'>"+ check[i] +"</div>";
+						textarea.scrollTop = textarea.scrollHeight;						
+					}
+				}
+			}else{
+				textarea.innerHTML += "<div class='col-sm-6 you'>" + event.data + "</div>";
+				textarea.innerHTML += "<div class='col-sm-6'>";
+				textarea.scrollTop = textarea.scrollHeight;
+			}
 		}
 		function opClose(event){
 			textarea.innerHTML += "<div class='container-fluid' style='padding: 0;'><%= name %>님이 퇴장 하셨습니다.</div>";
 			webSocket.send("<%= name %>:퇴장 하였습니다.");
 		}
 		function onOpen(event){
-			textarea.innerHTML += "<div class='container-fluid' style='padding: 0;'><%= name %>님이 입장 하셨습니다.</div>";
-			webSocket.send("<%= name %>:입장 하였습니다.");
+			textarea.innerHTML += "<div class='container-fluid' style='padding: 0;'>채팅방에 입장하셨습니다.</div>";
+			webSocket.send("[djalwjc1542]<%= name %>님이 입장하셨습니다.");
 		}
 		function onError(event){
 			alert(event.data);

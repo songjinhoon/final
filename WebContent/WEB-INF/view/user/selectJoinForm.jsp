@@ -23,9 +23,10 @@
 		}
 		.normal:hover { cursor: pointer; }
 		.normal span { color: #ffffff; }
-		.row { padding: 10px 0; }
+		.section { padding: 10px 0; }
 		.kakao, .naver { padding: 0; }
-		img { width: 100%; height: 60px; }
+		.naver img { width: 100%; height: 60px; }
+		.kakao img { width: 100%; height: 60px; }
 	</style>
 </head>
 <body>
@@ -34,14 +35,14 @@
 		<div class="col-lg-4"></div>
 		<div class="col-lg-4 jumbotron">
 			<p class="text-center">SELECT JOIN TYPE</p>
-			<div class="row">
+			<div class="row section">
 				<div class="col-lg-3"></div>
 				<div class="col-lg-6 normal" onclick="location.href='${pageContext.request.contextPath}/user/joinForm'">
 					<span>일반 회원 가입</span>
 				</div>
 				<div class="col-lg-3"></div>
 			</div>
-			<div class="row">
+			<div class="row section">
 				<div class="col-lg-3"></div>
 				<div class="col-lg-6 kakao">
 					<a href="${kakaoApiUrl}">
@@ -50,7 +51,7 @@
 				</div>
 				<div class="col-lg-3"></div>
 			</div>
-			<div class="row">
+			<div class="row section">
 				<div class="col-lg-3"></div>
 				<div class="col-lg-6 naver">
 		       		<a href="${naverApiUrl}">

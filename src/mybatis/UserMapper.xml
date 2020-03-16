@@ -4,35 +4,41 @@
 <mapper namespace="mybatis.UserMapper">
 	<insert id="joinUser" parameterType="User">
 			INSERT INTO user1
-			VALUES (#{userId}, #{userPasswd}, #{userName}, #{userEmail}, #{userEmailHash},
-			 #{userEmailCheck}, #{userPhone}, #{userAddress},0)
+			VALUES (#{userid}, #{userpasswd}, #{username}, #{useremail}, #{useremailhash},
+			 #{useremailcheck}, #{userphone}, #{useraddress},0)
 	</insert>
 	
 	<select id="getUserEmailChecked" resultType="int" parameterType="String">
-		SELECT userEmailCheck FROM user1 
-		WHERE userId = #{userId}
+		SELECT useremailcheck FROM user1 
+		WHERE userid = #{userId}
 	</select>
 	
 	<select id="getUserEmail" resultType="String" parameterType="String">
-		SELECT userEmail FROM user1
-		WHERE userId = #{userId}
+		SELECT useremail FROM user1
+		WHERE userid = #{userId}
 	</select>
 	
 	<update id="setUserEmailChecked" parameterType="String">
 		UPDATE user1
-		SET userEmailCheck=1
-		WHERE userId=#{userId}
+		SET useremailcheck=1
+		WHERE userid=#{userId}
 	</update>
 	
 	<select id="getUserIdCheck" parameterType="String" resultType="String">
-		SELECT userId 
+		SELECT userid 
 		FROM user1 
-		WHERE userId = #{userId}
+		WHERE userid = #{userId}
 	</select>
 	
-	<select id="Login" parameterType="List" resultType="String">
-		SELECT userId
+	<select id="Login" parameterType="User" resultType="String">
+		SELECT userid
 		FROM user1
-		WHERE userId = #{userId} and userPasswd = #{userPasswd}
+		WHERE userid = #{userid} and userpasswd = #{userpasswd}
+	</select>
+	
+	<select id="getUserInfo" parameterType="String" resultType="User">
+		SELECT *
+		FROM user1
+		WHERE userid = #{userId}
 	</select>
 </mapper>

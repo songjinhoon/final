@@ -23,14 +23,14 @@ public class WebSocketServer {
 				id = message.substring(message.indexOf(":[") + 2, message.indexOf("]")); 
 				System.out.println("id:[" + id + "]");
 			}
-			String movemessage = session.getId() + " : " + message;
+//			String movemessage = session.getId() + " : " + message;
 
 			for (Session client : clients) {
 				if (!client.equals(session)) {
 					if (id == null) {
-						client.getBasicRemote().sendText(movemessage);
+						client.getBasicRemote().sendText(message);
 					} else if (id.equals(client.getId())) {
-						client.getBasicRemote().sendText(movemessage);
+						client.getBasicRemote().sendText(message);
 					}
 				}
 			}

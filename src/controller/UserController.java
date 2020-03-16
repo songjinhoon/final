@@ -120,22 +120,17 @@ public class UserController extends ActionAnnotation {
 	//로그인 처리
 	@RequestMapping(value = "loginPro", method = RequestMethod.POST)
 	public String loginPro(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
 		response.setContentType("text/html; charset=UTF-8");
 		request.setCharacterEncoding("utf-8");
-		
 		User user = new User();
 		HttpSession session = request.getSession();
 		String userId = request.getParameter("userId");
 		String userPasswd = request.getParameter("userPasswd");
-		user.setUserId(userId);
-		user.setUserPasswd(userPasswd);
-		
+		user.setUserid(userId);
+		user.setUserpasswd(userPasswd);
 		MybatisUserDao service = MybatisUserDao.getInstance();
 		userId = service.Login(user);
-		
 		request.setAttribute("userId", userId);
-		
 		PrintWriter script = response.getWriter();
 		
 		if(userId == null) {
@@ -145,7 +140,8 @@ public class UserController extends ActionAnnotation {
 			script.println("</script>");
 			script.close();		
 		}else if(userId != null) {
-			session.setAttribute("userId", userId);
+			user = service.getUserInfo(userId);
+			session.setAttribute("user", user);
 			script.println("<script>");
 			script.println("alert('로그인되었습니다.');");
 			script.println("location.href = '/zSpringProject/main/main'");
@@ -189,16 +185,17 @@ public class UserController extends ActionAnnotation {
 
 		MybatisUserDao service = MybatisUserDao.getInstance();
 		User user = new User();
-		user.setUserId(userId);
-		user.setUserPasswd(userPasswd);
-		user.setUserName(userName);
-		user.setUserEmail(userEmail);
-		user.setUserEmailHash(userEmailHash);
-		user.setUserEmailCheck(userEmailCheck);
-		user.setUserPhone(userPhone);
-		user.setUserAddress(userAddress);
+		user.setUserid(userId);
+		user.setUserpasswd(userPasswd);
+		user.setUsername(userName);
+		user.setUseremail(userEmail);
+		user.setUseremailhash(userEmailHash);
+		user.setUseremailcheck(userEmailCheck);
+		user.setUserphone(userPhone);
+		user.setUseraddress(userAddress);
 		service.joinUser(user);
 		session.setAttribute("userId", userId);
+		
 
 		return "redirect:/user/joinSendEmail";
 	}
@@ -298,56 +295,59 @@ public class UserController extends ActionAnnotation {
 	
 	
 	//메일 인증 확인
-	@RequestMapping(value="joinEmailCheckPro", method=RequestMethod.GET)
-	public String joinEmailCheckPro(HttpServletRequest request, HttpServletResponse response) throws Exception  {
-		response.setContentType("text/html; charset=UTF-8");
-		request.setCharacterEncoding("utf-8");
+    @RequestMapping(value = "joinEmailCheckPro", method = RequestMethod.GET)
+    public String joinEmailCheckPro(HttpServletRequest request, HttpServletResponse response) throws Exception {
+      response.setContentType("text/html; charset=UTF-8");
+      request.setCharacterEncoding("utf-8");
 
-		HttpSession session = request.getSession();
-		String code = request.getParameter("code");
-		
-		System.out.println(code);
-		
-		String userId = null;
-		MybatisUserDao service = MybatisUserDao.getInstance();
-		
-		if(session.getAttribute("userId") != null) {
-			userId = (String)session.getAttribute("userId");
-		}else if(userId == null) {
+      HttpSession session = request.getSession();
+      String code = request.getParameter("code");
 
-			PrintWriter script = response.getWriter();
-			script.println("<script>");
-			script.println("alert('로그인을 해주세요.');");
-			script.println("location.href = '/zSpringProject/user/loginForm'");
-			script.println("</script>");
-			script.close();
-		}
-		
-		String userEmail = service.getUserEmail(userId);
-		
-		//인증코드와 디비에 저장된 코드 확인
-		boolean rightCode = (new SHA256().getSHA256(userEmail).equals(code)) ? true : false;
-		System.out.println(rightCode);
-		if(rightCode == true) {
-			service.setUserEmailChecked(userId);
-			PrintWriter script = response.getWriter();
-			script.println("<script>");
-			script.println("alert('인증에 성공했습니다.');");
-			script.println("location.href = '/zSpringProject/main/main'");
-			script.println("</script>");
-			script.close();		
-		}else {
-			
-			PrintWriter script = response.getWriter();
-			script.println("<script>");
-			script.println("alert('유효하지 않은 코드입니다.');");
-			script.println("location.href = '/zSpringProject/main/main'");
-			script.println("</script>");
-			script.close();		
-		}
+      String userId = null;
+      System.out.println("joinEmailCheckPro-----userId : " + userId);
+      System.out.println(code);
 
-		return "redirect:/main/main";
-	}
+      MybatisUserDao service = MybatisUserDao.getInstance();
+
+      if (session.getAttribute("userId") != null) {
+         userId = (String) session.getAttribute("userId");
+
+         System.out.println("userId----------------------------" + userId);
+         String userEmail = service.getUserEmail(userId);
+
+         // 인증코드와 디비에 저장된 코드 확인
+         boolean rightCode = (new SHA256().getSHA256(userEmail).equals(code)) ? true : false;
+         System.out.println(rightCode);
+
+         if (rightCode == true) {
+            System.out.println("joinEmailCheckPro안에 있는 userId의 값 : " + userId);
+            service.setUserEmailChecked(userId);
+
+            PrintWriter script = response.getWriter();
+            script.println("<script>");
+            script.println("alert('인증에 성공했습니다.');");
+            script.println("location.href = '/zSpringProject/main/main'");
+            script.println("</script>");
+            script.close();
+         } else if (rightCode == false) {
+            PrintWriter script = response.getWriter();
+            script.println("<script>");
+            script.println("alert('유효하지 않은 코드입니다.');");
+            script.println("location.href = '/zSpringProject/main/main'");
+            script.println("</script>");
+            script.close();
+         }
+      } else if (session.getAttribute("userId") == null) {
+         PrintWriter script = response.getWriter();
+         script.println("<script>");
+         script.println("alert('로그인을 해주세요.');");
+         script.println("location.href = '/zSpringProject/user/loginForm'");
+         script.println("</script>");
+         script.close();
+      }
+
+      return "";
+    }
 	
 	//ID 중복체크 창
 	@RequestMapping(value="confirmId", method = RequestMethod.GET)
