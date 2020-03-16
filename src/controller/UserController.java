@@ -125,10 +125,9 @@ public class UserController extends ActionAnnotation {
 				script.println("</script>");
 				script.close();
 			} else if (emailCheck != 1) {
-				session.setAttribute("userId", userId);
 				script.println("<script>");
-				script.println("alert('이메일 인증을 완료하지 않았습니다.\\n이메일 인증을 완료해주세요!');");
-				script.println("location.href = '/zSpringProject/main/main'");
+				script.println("alert('이메일 인증을 완료하지 않았습니다.\\n 인증 완료 후 다시 로그인해주세요.');");
+				script.println("location.href = '/zSpringProject/user/loginForm'");
 				script.println("</script>");
 				script.close();
 			}
@@ -314,6 +313,10 @@ public class UserController extends ActionAnnotation {
 
 			String userEmail = service.getUserEmail(userId);
 
+			//유저의 이메일 확인 유무를 확인
+			int userEmailChecked = 0;
+			userEmailChecked = service.getUserEmailChecked(userId);
+			
 			// 인증코드와 디비에 저장된 코드 확인
 			boolean rightCode = (new SHA256().getSHA256(userEmail).equals(code)) ? true : false;
 			System.out.println(rightCode);

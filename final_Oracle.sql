@@ -23,3 +23,6 @@ update user1 set userEmailCheck=0 where userId='qwe';
 SELECT userScore
 		FROM user1 
 		WHERE userId = 'dbfla132';
+		
+				SELECT useremailcheck FROM user1
+		WHERE userid = 'dbfla132'
