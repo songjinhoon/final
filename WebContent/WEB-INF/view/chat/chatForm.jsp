@@ -1,11 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<% 
-	String name = request.getParameter("name");
-	if(name == null){
-		name = "무명";
-	}	
-%>    
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -61,7 +55,7 @@
 </body>
 	<script type="text/javascript">
 		var textarea = document.getElementById('messageWindow');
-		var webSocket = new WebSocket('ws://localhost:8080<%= request.getContextPath() %>/weball');
+		var webSocket = new WebSocket('ws://211.63.89.78:8080<%= request.getContextPath() %>/weball');
 		var inputMessage = document.getElementById('inputMessage');
 		
 		webSocket.onerror = function(event){ onError(event) };
@@ -85,12 +79,12 @@
 			}
 		}
 		function opClose(event){
-			textarea.innerHTML += "<div class='container-fluid' style='padding: 0;'><%= name %>님이 퇴장 하셨습니다.</div>";
-			webSocket.send("<%= name %>:퇴장 하였습니다.");
+			textarea.innerHTML += "<div class='container-fluid' style='padding: 0;'>${ userName }님이 퇴장 하셨습니다.</div>";
+			webSocket.send("${ userName }님이 퇴장 하였습니다.");
 		}
 		function onOpen(event){
 			textarea.innerHTML += "<div class='container-fluid' style='padding: 0;'>채팅방에 입장하셨습니다.</div>";
-			webSocket.send("[djalwjc1542]<%= name %>님이 입장하셨습니다.");
+			webSocket.send("[djalwjc1542]${ userName }님이 입장하셨습니다.");
 		}
 		function onError(event){
 			alert(event.data);
@@ -99,7 +93,7 @@
 			textarea.innerHTML += "<div class='col-sm-6'>";
 			textarea.innerHTML += "<div class='col-sm-6 me'>" + inputMessage.value + "</div>";
 			textarea.scrollTop = textarea.scrollHeight;
-			webSocket.send("<%= name %>:" + inputMessage.value);
+			webSocket.send("${ userName }: " + inputMessage.value);
 			inputMessage.value = "";
 		}
 	</script>

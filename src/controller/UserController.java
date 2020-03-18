@@ -148,7 +148,9 @@ public class UserController extends ActionAnnotation {
 			script.close();
 		} else if (userId != null) {
 			if (emailCheck == 1) {
-				session.setAttribute("userId", userId);
+				user = service.getUserInfo(userId);
+				session.setAttribute("userId", user.getUserid());
+				session.setAttribute("userName", user.getUsername());
 				script.println("<script>");
 				script.println("location.href = '/zSpringProject/main/main'");
 				script.println("</script>");

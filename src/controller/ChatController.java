@@ -22,6 +22,7 @@ public class ChatController extends ActionAnnotation {
 		if(session.getAttribute("userId") != null){
 			userIdCheck = true;
 			request.setAttribute("userIdCheck", userIdCheck);
+			request.setAttribute("userName", session.getAttribute("userName")); 
 		}else{
 			request.setAttribute("userIdCheck", userIdCheck);
 		}
@@ -30,6 +31,7 @@ public class ChatController extends ActionAnnotation {
 	@RequestMapping(value = "chatForm", method = RequestMethod.GET)
 	public String list(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		if((boolean) request.getAttribute("userIdCheck")){
+			System.out.println("[ChartController] " + request.getAttribute("userName"));
 			return "/WEB-INF/view/chat/chatForm.jsp";
 		}else{
 			return "/WEB-INF/view/user/loginForm.jsp";
