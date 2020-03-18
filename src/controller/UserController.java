@@ -35,35 +35,35 @@ public class UserController extends ActionAnnotation {
 	public void initProcess(HttpServletRequest request, HttpServletResponse response) {
 
 	}
-	
+
 	@RequestMapping(value = "selectJoinForm", method = RequestMethod.GET)
 	public String selectJoinForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
-	    String naverApiUrl = NaverAPI.getApiUrl();
-	    String kakaoApiUrl = KakaoAPI.getApiUrl();
-	    request.setAttribute("naverApiUrl", naverApiUrl);
+		String naverApiUrl = NaverAPI.getApiUrl();
+		String kakaoApiUrl = KakaoAPI.getApiUrl();
+		request.setAttribute("naverApiUrl", naverApiUrl);
 		request.setAttribute("kakaoApiUrl", kakaoApiUrl);
-		
+
 		return "/WEB-INF/view/user/selectJoinForm.jsp";
 	}
-	
+
 	@RequestMapping(value = "kakaoLoginForm", method = RequestMethod.GET)
 	public String kakaoLoginForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String code = request.getParameter("code");
 		String error = request.getParameter("error");
 		request.setAttribute("error", error);
-		if(code != null) {
+		if (code != null) {
 			KakaoAPI kakao = new KakaoAPI();
 			String access_Token = kakao.getAccessToken(code);
 			HashMap<String, Object> userInfo = kakao.getUserInfo(access_Token);
 			if (userInfo.get("nickname") != null) {
 				request.setAttribute("userId", userInfo.get("email"));
-		    	request.setAttribute("userName", userInfo.get("nickname"));
-		    }
+				request.setAttribute("userName", userInfo.get("nickname"));
+			}
 		}
-		
+
 		return "/WEB-INF/view/user/apiLoginForm.jsp";
 	}
-	
+
 	@RequestMapping(value = "naverLoginForm", method = RequestMethod.GET)
 	public String naverLoginForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		NaverAPI naverAPI = new NaverAPI();
@@ -71,47 +71,47 @@ public class UserController extends ActionAnnotation {
 		HashMap<String, Object> userInfo = naverAPI.getUserInfo(access_token);
 		request.setAttribute("userId", userInfo.get("userId"));
 		request.setAttribute("userName", userInfo.get("userName"));
-		
+
 		return "/WEB-INF/view/user/apiLoginForm.jsp";
 	}
 
 	@RequestMapping(value = "loginForm", method = RequestMethod.GET)
 	public String loginForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
+
 		return "/WEB-INF/view/user/loginForm.jsp";
 	}
 
-	//·Î±×ÀÎ Ã³¸®
+	// ë¡œê·¸ì¸ ì²˜ë¦¬
 	@RequestMapping(value = "loginPro", method = RequestMethod.POST)
 	public String loginPro(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
+
 		response.setContentType("text/html; charset=UTF-8");
 		request.setCharacterEncoding("utf-8");
-		
+
 		User user = new User();
 		HttpSession session = request.getSession();
 		String userId = request.getParameter("userId");
 		String userPasswd = request.getParameter("userPasswd");
 		user.setUserId(userId);
 		user.setUserPasswd(userPasswd);
-		
+
 		MybatisUserDao service = MybatisUserDao.getInstance();
 		userId = service.Login(user);
-		
+
 		request.setAttribute("userId", userId);
-		
+
 		PrintWriter script = response.getWriter();
-		
-		if(userId == null) {
+
+		if (userId == null) {
 			script.println("<script>");
-			script.println("alert('·Î±×ÀÎ¿¡ ½ÇÆĞÇÏ¼Ì½À´Ï´Ù. \\n´Ù½Ã ·Î±×ÀÎÇØÁÖ¼¼¿ä.');");
+			script.println("alert('ë¡œê·¸ì¸ì— ì‹¤íŒ¨í•˜ì…¨ìŠµë‹ˆë‹¤. \\në‹¤ì‹œ ë¡œê·¸ì¸í•´ì£¼ì„¸ìš”.');");
 			script.println("location.href = '/zSpringProject/user/loginForm'");
 			script.println("</script>");
-			script.close();		
-		}else if(userId != null) {
+			script.close();
+		} else if (userId != null) {
 			session.setAttribute("userId", userId);
 			script.println("<script>");
-			script.println("alert('·Î±×ÀÎµÇ¾ú½À´Ï´Ù.');");
+			script.println("alert('ë¡œê·¸ì¸ë˜ì—ˆìŠµë‹ˆë‹¤.');");
 			script.println("location.href = '/zSpringProject/main/main'");
 			script.println("</script>");
 			script.close();
@@ -129,14 +129,14 @@ public class UserController extends ActionAnnotation {
 		return "/WEB-INF/view/user/loginForm.jsp";
 	}
 
-	// È¸¿ø°¡ÀÔ Æû
+	// íšŒì›ê°€ì… í¼
 	@RequestMapping(value = "joinForm", method = RequestMethod.GET)
 	public String joinForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		return "/WEB-INF/view/user/joinForm.jsp";
 	}
 
-	// È¸¿ø°¡ÀÔ Ã³¸® (ÀÌ¸ŞÀÏ ÀÎÁõ)
+	// íšŒì›ê°€ì… ì²˜ë¦¬ (ì´ë©”ì¼ ì¸ì¦)
 	@RequestMapping(value = "joinPro", method = RequestMethod.POST)
 	public String joinPro(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -151,7 +151,7 @@ public class UserController extends ActionAnnotation {
 		int userEmailCheck = 0;
 		String userPhone = request.getParameter("phone1") + request.getParameter("phone2")
 				+ request.getParameter("phone3");
-		String userAddress = request.getParameter("userAddress") + " " +request.getParameter("detailAddress");
+		String userAddress = request.getParameter("userAddress") + " " + request.getParameter("detailAddress");
 
 		MybatisUserDao service = MybatisUserDao.getInstance();
 
@@ -172,7 +172,7 @@ public class UserController extends ActionAnnotation {
 		return "redirect:/user/joinSendEmail";
 	}
 
-	// ÀÎÁõ¸ŞÀÏ º¸³»±â
+	// ì¸ì¦ë©”ì¼ ë³´ë‚´ê¸°
 	@RequestMapping(value = "joinSendEmail", method = RequestMethod.GET)
 	public String joinSendEmail(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		response.setContentType("text/html; charset=UTF-8");
@@ -183,16 +183,16 @@ public class UserController extends ActionAnnotation {
 
 		String userId = null;
 
-		// ¼¼¼Ç¿¡ ÀúÀåµÈ id°¡ nullÀÌ ¾Æ´Ï¶ó¸é °ª ÀúÀå
+		// ì„¸ì…˜ì— ì €ì¥ëœ idê°€ nullì´ ì•„ë‹ˆë¼ë©´ ê°’ ì €ì¥
 		if (session.getAttribute("userId") != null) {
 			userId = (String) session.getAttribute("userId");
 		}
 
 		if (userId == null) {
-			// userId°¡ ¾ø´Ù¸é ·Î±×ÀÎÆûÀ¸·Î ÀÌµ¿
+			// userIdê°€ ì—†ë‹¤ë©´ ë¡œê·¸ì¸í¼ìœ¼ë¡œ ì´ë™
 			PrintWriter script = response.getWriter();
 			script.println("<script>");
-			script.println("alert('·Î±×ÀÎÀ» ÇØÁÖ¼¼¿ä.');");
+			script.println("alert('ë¡œê·¸ì¸ì„ í•´ì£¼ì„¸ìš”.');");
 			script.println("location.href = '/zSpringProject/user/loginForm'");
 			script.println("</script>");
 			script.close();
@@ -201,28 +201,28 @@ public class UserController extends ActionAnnotation {
 		}
 
 		int emailChecked = service.getUserEmailChecked(userId);
-		
+
 		if (emailChecked == 1) {
 			PrintWriter script = response.getWriter();
 			script.println("<script>");
-			script.println("alert('ÀÌ¹Ì ÀÎÁõ µÈ È¸¿øÀÔ´Ï´Ù.');");
+			script.println("alert('ì´ë¯¸ ì¸ì¦ ëœ íšŒì›ì…ë‹ˆë‹¤.');");
 			script.println("location.href = '/zSpringProject/main/main'");
 			script.println("</script>");
 			script.close();
 
 			return "redirect:/main/main";
-		}else if (emailChecked == 0) {
-			// »ç¿ëÀÚ¿¡°Ô º¸³¾ ÀÌ¸ŞÀÏ ³»¿ëÀ» ÀÔ·Â
+		} else if (emailChecked == 0) {
+			// ì‚¬ìš©ìì—ê²Œ ë³´ë‚¼ ì´ë©”ì¼ ë‚´ìš©ì„ ì…ë ¥
 			String host = "http://localhost:8080/zSpringProject/user/";
 			String from = "oakNutSpring@gmail.com";
 			String to = service.getUserEmail(userId);
 
-			String subject = "µµÅä¸®¸¶ÄÏ È¸¿ø°¡ÀÔ ÀÌ¸ŞÀÏ ÀÎÁõ¸ŞÀÏÀÔ´Ï´Ù!";
-			String content = "´ÙÀ½ ¸µÅ©¿¡ Á¢¼ÓÇÏ¿© ÀÌ¸ŞÀÏ È®ÀÎÀ» ÁøÇàÇØÁÖ¼¼¿ä:D" +
+			String subject = "ë„í† ë¦¬ë§ˆì¼“ íšŒì›ê°€ì… ì´ë©”ì¼ ì¸ì¦ë©”ì¼ì…ë‹ˆë‹¤!";
+			String content = "ë‹¤ìŒ ë§í¬ì— ì ‘ì†í•˜ì—¬ ì´ë©”ì¼ í™•ì¸ì„ ì§„í–‰í•´ì£¼ì„¸ìš”:D" +
 
-					"<a href='" + host + "joinEmailCheckPro?code=" + new SHA256().getSHA256(to) + "'>ÀÌ¸ŞÀÏ ÀÎÁõÇÏ±â</a>";
+					"<a href='" + host + "joinEmailCheckPro?code=" + new SHA256().getSHA256(to) + "'>ì´ë©”ì¼ ì¸ì¦í•˜ê¸°</a>";
 
-			// SMTP¿¡ Á¢¼ÓÇÏ±â À§ÇÑ Á¤º¸¸¦ ÀÔ·ÂÇÏ´Â ºÎºĞ
+			// SMTPì— ì ‘ì†í•˜ê¸° ìœ„í•œ ì •ë³´ë¥¼ ì…ë ¥í•˜ëŠ” ë¶€ë¶„
 			Properties p = new Properties();
 			p.put("mail.smtp.user", from);
 			p.put("mail.smtp.host", "smtp.googlemail.com");
@@ -252,7 +252,7 @@ public class UserController extends ActionAnnotation {
 				e.printStackTrace();
 				PrintWriter script = response.getWriter();
 				script.println("<script>");
-				script.println("alert('¿À·ù°¡ ¹ß»ıÇß½À´Ï´Ù..');");
+				script.println("alert('ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤..');");
 				script.println("history.back();");
 				script.println("</script>");
 				script.close();
@@ -264,74 +264,73 @@ public class UserController extends ActionAnnotation {
 		}
 		return "/WEB-INF/view/user/joinSendEmail.jsp";
 	}
-	
-	
-	//¸ŞÀÏ ÀÎÁõ È®ÀÎ
-	@RequestMapping(value="joinEmailCheckPro", method=RequestMethod.GET)
-	public String joinEmailCheckPro(HttpServletRequest request, HttpServletResponse response) throws Exception  {
+
+	// ë©”ì¼ ì¸ì¦ í™•ì¸
+	@RequestMapping(value = "joinEmailCheckPro", method = RequestMethod.GET)
+	public String joinEmailCheckPro(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		response.setContentType("text/html; charset=UTF-8");
 		request.setCharacterEncoding("utf-8");
 
 		HttpSession session = request.getSession();
 		String code = request.getParameter("code");
-		
+
 		System.out.println(code);
-		
+
 		String userId = null;
 		MybatisUserDao service = MybatisUserDao.getInstance();
-		
-		if(session.getAttribute("userId") != null) {
-			userId = (String)session.getAttribute("userId");
-		}else if(userId == null) {
+
+		if (session.getAttribute("userId") != null) {
+			userId = (String) session.getAttribute("userId");
+		} else if (userId == null) {
 
 			PrintWriter script = response.getWriter();
 			script.println("<script>");
-			script.println("alert('·Î±×ÀÎÀ» ÇØÁÖ¼¼¿ä.');");
+			script.println("alert('ë¡œê·¸ì¸ì„ í•´ì£¼ì„¸ìš”.');");
 			script.println("location.href = '/zSpringProject/user/loginForm'");
 			script.println("</script>");
 			script.close();
 		}
-		
+
 		String userEmail = service.getUserEmail(userId);
-		
-		//ÀÎÁõÄÚµå¿Í µğºñ¿¡ ÀúÀåµÈ ÄÚµå È®ÀÎ
+
+		// ì¸ì¦ì½”ë“œì™€ ë””ë¹„ì— ì €ì¥ëœ ì½”ë“œ í™•ì¸
 		boolean rightCode = (new SHA256().getSHA256(userEmail).equals(code)) ? true : false;
 		System.out.println(rightCode);
-		if(rightCode == true) {
+		if (rightCode == true) {
 			service.setUserEmailChecked(userId);
 			PrintWriter script = response.getWriter();
 			script.println("<script>");
-			script.println("alert('ÀÎÁõ¿¡ ¼º°øÇß½À´Ï´Ù.');");
+			script.println("alert('ì¸ì¦ì— ì„±ê³µí–ˆìŠµë‹ˆë‹¤.');");
 			script.println("location.href = '/zSpringProject/main/main'");
 			script.println("</script>");
-			script.close();		
-		}else {
-			
+			script.close();
+		} else {
+
 			PrintWriter script = response.getWriter();
 			script.println("<script>");
-			script.println("alert('À¯È¿ÇÏÁö ¾ÊÀº ÄÚµåÀÔ´Ï´Ù.');");
+			script.println("alert('ìœ íš¨í•˜ì§€ ì•Šì€ ì½”ë“œì…ë‹ˆë‹¤.');");
 			script.println("location.href = '/zSpringProject/main/main'");
 			script.println("</script>");
-			script.close();		
+			script.close();
 		}
 
 		return "redirect:/main/main";
 	}
-	
-	//ID Áßº¹Ã¼Å© Ã¢
-	@RequestMapping(value="confirmId", method = RequestMethod.GET)
+
+	// ID ì¤‘ë³µì²´í¬ ì°½
+	@RequestMapping(value = "confirmId", method = RequestMethod.GET)
 	public String confirmId(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		response.setContentType("text/html; charset=UTF-8");
 		request.setCharacterEncoding("utf-8");
-		
+
 		String userId = request.getParameter("userId");
-		//System.out.println(userId);
+		// System.out.println(userId);
 		MybatisUserDao service = MybatisUserDao.getInstance();
-		
+
 		int userIdChecked = service.getUserIdCheck(userId);
-		System.out.println(userIdChecked+"-------------------Controller");
-		
-		//el·Î »ç¿ëÇÒ ¼ö ÀÖ°Ô º¸³¿
+		System.out.println(userIdChecked + "-------------------Controller");
+
+		// elë¡œ ì‚¬ìš©í•  ìˆ˜ ìˆê²Œ ë³´ëƒ„
 		request.setAttribute("userIdChecked", userIdChecked);
 		request.setAttribute("userId", userId);
 		return "/WEB-INF/view/user/confirmId.jsp";
