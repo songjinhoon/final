@@ -61,7 +61,7 @@
 			<div style="float: left; width: 30%;">
 				<div style="border: 3px solid rgb(255, 194, 0); height: 200px;">
 				<br><p></p><br>
-					<a href="${pageContext.request.contextPath}/user/saleList">
+					<a href="${pageContext.request.contextPath}/chat/chatForm">
 						<i class="fas fa-comments  fa-4x"></i>
 					</a> 
 					<br>채팅

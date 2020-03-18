@@ -38,14 +38,16 @@
                         </div>
                         <div class="col-lg-6 col-md-4 ">
                             <div class="social_media_links">
-                              <c:if test="${userId == null }">
+                              <c:if test="${userId == null || emailCheck == 0 }">
                             	<a href="${pageContext.request.contextPath}/user/loginForm"><i class="fa fa-unlock"></i></a>
                             	<a href="${pageContext.request.contextPath}/user/selectJoinForm"><i class="fa fa-user-plus"></i></a>
                             </c:if>
-                            <c:if test="${userId != null }">
-                                <a href="${pageContext.request.contextPath}/chat/chatForm"><i class="fa fa-comments"></i></a>
-                                <a href="${pageContext.request.contextPath}/user/logoutForm"><i class="fa fa-lock"></i></a>
-                                <a href="${pageContext.request.contextPath}/user/myPage"><i class="fa fa-user-circle"></i></a>  
+                             <c:if test="${userId != null }">
+                             	<c:if test="${emailCheck != 0 }">
+                                	<a href="${pageContext.request.contextPath}/chat/chatForm"><i class="fa fa-comments"></i></a>
+                                	<a href="${pageContext.request.contextPath}/user/logoutForm"><i class="fa fa-lock"></i></a>
+                                	<a href="${pageContext.request.contextPath}/user/myPage"><i class="fa fa-user-circle"></i></a>  
+                                </c:if>
                             </c:if>
                          </div>
                         </div>

@@ -107,11 +107,20 @@ public class UserController extends ActionAnnotation {
 
 	@RequestMapping(value = "loginForm", method = RequestMethod.GET)
 	public String loginForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		HttpSession session = request.getSession();
+		String userId = (String) session.getAttribute("userId");
+		if(userId != null) {
+			int emailCheck = (int) session.getAttribute("emailCheck");
+			System.out.println("emailCheck : " + emailCheck);
+		}
+		
+		System.out.println("userID : " + userId);
+		
+		
 		String naverApiUrl = NaverAPI.getApiUrl();
 	    String kakaoApiUrl = KakaoAPI.getApiUrl();
 	    request.setAttribute("naverApiUrl", naverApiUrl);
 		request.setAttribute("kakaoApiUrl", kakaoApiUrl);
-		
 		return "/WEB-INF/view/user/loginForm.jsp";
 	}
 	
@@ -135,8 +144,8 @@ public class UserController extends ActionAnnotation {
 		MybatisUserDao service = MybatisUserDao.getInstance();
 		userId = service.Login(user);
 		emailCheck = service.getUserEmailChecked(userId);
-		
-		request.setAttribute("emailCheck", emailCheck);
+
+		session.setAttribute("emailCheck", emailCheck);
 
 		PrintWriter script = response.getWriter();
 
@@ -154,8 +163,10 @@ public class UserController extends ActionAnnotation {
 				script.println("</script>");
 				script.close();
 			} else if (emailCheck != 1) {
+				session.setAttribute("userId", userId);
 				script.println("<script>");
 				script.println("alert('이메일 인증을 완료하지 않았습니다.\\n인증 완료 후 다시 로그인해주세요.');");
+				System.out.println(userId);
 				script.println("location.href = '/zSpringProject/user/loginForm'");
 				script.println("</script>");
 				script.close();

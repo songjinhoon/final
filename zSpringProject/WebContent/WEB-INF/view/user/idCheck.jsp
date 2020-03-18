@@ -20,7 +20,7 @@
 		</tr>
 	</table>
 
-	<form name="checkForm" method="get" action="${pageContext.request.contextPath}/user/confirmId" autocomplete="off">
+	<form name="checkForm" method="get" action="${pageContext.request.contextPath}/user/idCheck" autocomplete="off">
 		<table  class="w3-table" width="320" cellspading="0" cellpading="5">
 			<tr>
 				<td align="center">
