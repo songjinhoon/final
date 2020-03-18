@@ -2,7 +2,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
 	<title>Insert title here</title>
 	<style>
 		.jumbotron {
@@ -23,7 +22,7 @@
 		}
 		.normal:hover { cursor: pointer; }
 		.normal span { color: #ffffff; }
-		.section { padding: 10px 0; }
+		.row { padding: 10px 0; }
 		.kakao, .naver { padding: 0; }
 		.naver img { width: 100%; height: 60px; }
 		.kakao img { width: 100%; height: 60px; }

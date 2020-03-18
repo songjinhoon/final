@@ -9,13 +9,13 @@
 	</insert>
 	
 	<select id="getUserEmailChecked" resultType="int" parameterType="String">
-		SELECT useremailcheck FROM user1 
-		WHERE userid = #{userId}
+		SELECT useremailcheck FROM user1
+		WHERE userid = #{userid}
 	</select>
 	
 	<select id="getUserEmail" resultType="String" parameterType="String">
 		SELECT useremail FROM user1
-		WHERE userid = #{userId}
+		WHERE userid = #{userid}
 	</select>
 	
 	<update id="setUserEmailChecked" parameterType="String">
@@ -25,15 +25,21 @@
 	</update>
 	
 	<select id="getUserIdCheck" parameterType="String" resultType="String">
-		SELECT userid 
+		SELECT userid
 		FROM user1 
-		WHERE userid = #{userId}
+		WHERE userid = #{userid}
 	</select>
 	
-	<select id="Login" parameterType="User" resultType="String">
+	<select id="Login" parameterType="List" resultType="String">
 		SELECT userid
 		FROM user1
 		WHERE userid = #{userid} and userpasswd = #{userpasswd}
+	</select>
+	
+	<select id="getUserScore" parameterType="String" resultType="int">
+		SELECT userscore
+		FROM user1 
+		WHERE userid = #{userid}
 	</select>
 	
 	<select id="getUserInfo" parameterType="String" resultType="User">

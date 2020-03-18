@@ -18,8 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ErrorMessages;
-
 import action.ActionAnnotation;
 import action.RequestMapping;
 import action.RequestMapping.RequestMethod;
@@ -66,7 +64,7 @@ public class UserController extends ActionAnnotation {
 		
 		return "/WEB-INF/view/user/apiLoginForm.jsp";
 	}
-	
+
 	@RequestMapping(value = "naverLoginForm", method = RequestMethod.GET)
 	public String naverLoginForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		NaverAPI naverAPI = new NaverAPI();
@@ -116,62 +114,76 @@ public class UserController extends ActionAnnotation {
 		
 		return "/WEB-INF/view/user/loginForm.jsp";
 	}
-
-	//로그인 처리
+	
+	// 로그인 처리
 	@RequestMapping(value = "loginPro", method = RequestMethod.POST)
 	public String loginPro(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
 		response.setContentType("text/html; charset=UTF-8");
 		request.setCharacterEncoding("utf-8");
+
 		User user = new User();
 		HttpSession session = request.getSession();
 		String userId = request.getParameter("userId");
+	
 		String userPasswd = request.getParameter("userPasswd");
+		int emailCheck = 0;
+
 		user.setUserid(userId);
 		user.setUserpasswd(userPasswd);
+
 		MybatisUserDao service = MybatisUserDao.getInstance();
 		userId = service.Login(user);
-		request.setAttribute("userId", userId);
-		PrintWriter script = response.getWriter();
+		emailCheck = service.getUserEmailChecked(userId);
 		
-		if(userId == null) {
+		request.setAttribute("emailCheck", emailCheck);
+
+		PrintWriter script = response.getWriter();
+
+		if (userId == null) {
 			script.println("<script>");
 			script.println("alert('로그인에 실패하셨습니다. \\n다시 로그인해주세요.');");
 			script.println("location.href = '/zSpringProject/user/loginForm'");
 			script.println("</script>");
-			script.close();		
-		}else if(userId != null) {
-			user = service.getUserInfo(userId);
-			session.setAttribute("user", user);
-			script.println("<script>");
-			script.println("alert('로그인되었습니다.');");
-			script.println("location.href = '/zSpringProject/main/main'");
-			script.println("</script>");
 			script.close();
+		} else if (userId != null) {
+			if (emailCheck == 1) {
+				session.setAttribute("userId", userId);
+				script.println("<script>");
+				script.println("location.href = '/zSpringProject/main/main'");
+				script.println("</script>");
+				script.close();
+			} else if (emailCheck != 1) {
+				script.println("<script>");
+				script.println("alert('이메일 인증을 완료하지 않았습니다.\\n인증 완료 후 다시 로그인해주세요.');");
+				script.println("location.href = '/zSpringProject/user/loginForm'");
+				script.println("</script>");
+				script.close();
+			}
 		}
+
 		return "";
 	}
 
 	@RequestMapping(value = "logoutForm", method = RequestMethod.GET)
 	public String logout(HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
-		KakaoAPI kakao = new KakaoAPI();
-		kakao.kakaoLogout((String) session.getAttribute("access_Token"));
-		session.removeAttribute("access_Token");
-		session.removeAttribute("userId");
+		session.invalidate();
 		return "/WEB-INF/view/user/loginForm.jsp";
 	}
 
 	// 회원가입 폼
 	@RequestMapping(value = "joinForm", method = RequestMethod.GET)
 	public String joinForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
 		return "/WEB-INF/view/user/joinForm.jsp";
 	}
 
 	// 회원가입 처리 (이메일 인증)
 	@RequestMapping(value = "joinPro", method = RequestMethod.POST)
 	public String joinPro(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
 		request.setCharacterEncoding("utf-8");
+
 		HttpSession session = request.getSession();
 		String userId = request.getParameter("userId");
 		String userPasswd = request.getParameter("userPasswd");
@@ -181,10 +193,21 @@ public class UserController extends ActionAnnotation {
 		int userEmailCheck = 0;
 		String userPhone = request.getParameter("phone1") + request.getParameter("phone2")
 				+ request.getParameter("phone3");
-		String userAddress = request.getParameter("userAddress") + " " +request.getParameter("detailAddress");
+		String userAddress = request.getParameter("userAddress") + " " + request.getParameter("detailAddress");
 
+		System.out.println(userId);
+		System.out.println(userPasswd);
+		System.out.println(userName);
+		System.out.println(userEmail);
+		System.out.println(userEmailHash);
+		System.out.println(userPhone);
+		System.out.println(userAddress);
+
+		/* return "/WEB-INF/view/main/main.jsp"; */
 		MybatisUserDao service = MybatisUserDao.getInstance();
+
 		User user = new User();
+
 		user.setUserid(userId);
 		user.setUserpasswd(userPasswd);
 		user.setUsername(userName);
@@ -193,9 +216,9 @@ public class UserController extends ActionAnnotation {
 		user.setUseremailcheck(userEmailCheck);
 		user.setUserphone(userPhone);
 		user.setUseraddress(userAddress);
+
 		service.joinUser(user);
 		session.setAttribute("userId", userId);
-		
 
 		return "redirect:/user/joinSendEmail";
 	}
@@ -229,7 +252,7 @@ public class UserController extends ActionAnnotation {
 		}
 
 		int emailChecked = service.getUserEmailChecked(userId);
-		
+
 		if (emailChecked == 1) {
 			PrintWriter script = response.getWriter();
 			script.println("<script>");
@@ -239,7 +262,7 @@ public class UserController extends ActionAnnotation {
 			script.close();
 
 			return "redirect:/main/main";
-		}else if (emailChecked == 0) {
+		} else if (emailChecked == 0) {
 			// 사용자에게 보낼 이메일 내용을 입력
 			String host = "http://localhost:8080/zSpringProject/user/";
 			String from = "oakNutSpring@gmail.com";
@@ -292,79 +315,117 @@ public class UserController extends ActionAnnotation {
 		}
 		return "/WEB-INF/view/user/joinSendEmail.jsp";
 	}
-	
-	
-	//메일 인증 확인
-    @RequestMapping(value = "joinEmailCheckPro", method = RequestMethod.GET)
-    public String joinEmailCheckPro(HttpServletRequest request, HttpServletResponse response) throws Exception {
-      response.setContentType("text/html; charset=UTF-8");
-      request.setCharacterEncoding("utf-8");
 
-      HttpSession session = request.getSession();
-      String code = request.getParameter("code");
-
-      String userId = null;
-      System.out.println("joinEmailCheckPro-----userId : " + userId);
-      System.out.println(code);
-
-      MybatisUserDao service = MybatisUserDao.getInstance();
-
-      if (session.getAttribute("userId") != null) {
-         userId = (String) session.getAttribute("userId");
-
-         System.out.println("userId----------------------------" + userId);
-         String userEmail = service.getUserEmail(userId);
-
-         // 인증코드와 디비에 저장된 코드 확인
-         boolean rightCode = (new SHA256().getSHA256(userEmail).equals(code)) ? true : false;
-         System.out.println(rightCode);
-
-         if (rightCode == true) {
-            System.out.println("joinEmailCheckPro안에 있는 userId의 값 : " + userId);
-            service.setUserEmailChecked(userId);
-
-            PrintWriter script = response.getWriter();
-            script.println("<script>");
-            script.println("alert('인증에 성공했습니다.');");
-            script.println("location.href = '/zSpringProject/main/main'");
-            script.println("</script>");
-            script.close();
-         } else if (rightCode == false) {
-            PrintWriter script = response.getWriter();
-            script.println("<script>");
-            script.println("alert('유효하지 않은 코드입니다.');");
-            script.println("location.href = '/zSpringProject/main/main'");
-            script.println("</script>");
-            script.close();
-         }
-      } else if (session.getAttribute("userId") == null) {
-         PrintWriter script = response.getWriter();
-         script.println("<script>");
-         script.println("alert('로그인을 해주세요.');");
-         script.println("location.href = '/zSpringProject/user/loginForm'");
-         script.println("</script>");
-         script.close();
-      }
-
-      return "";
-    }
-	
-	//ID 중복체크 창
-	@RequestMapping(value="confirmId", method = RequestMethod.GET)
-	public String confirmId(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	// 메일 인증 확인
+	@RequestMapping(value = "joinEmailCheckPro", method = RequestMethod.GET)
+	public String joinEmailCheckPro(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		response.setContentType("text/html; charset=UTF-8");
 		request.setCharacterEncoding("utf-8");
-		
-		String userId = request.getParameter("userId");
-		//System.out.println(userId);
+
+		HttpSession session = request.getSession();
+		String code = request.getParameter("code");
+
+		String userId = null;
+		System.out.println(code);
+
 		MybatisUserDao service = MybatisUserDao.getInstance();
-		
+
+		if (session.getAttribute("userId") != null) {
+			userId = (String) session.getAttribute("userId");
+
+			String userEmail = service.getUserEmail(userId);
+
+			
+			// 인증코드와 디비에 저장된 코드 확인
+			boolean rightCode = (new SHA256().getSHA256(userEmail).equals(code)) ? true : false;
+			System.out.println(rightCode);
+
+			if (rightCode == true) {
+				System.out.println("joinEmailCheckPro안에 있는 userId의 값 : " + userId);
+				service.setUserEmailChecked(userId);
+				session.setAttribute("userId", userId);
+				PrintWriter script = response.getWriter();
+				script.println("<script>");
+				script.println("alert('인증에 성공했습니다.');");
+				script.println("location.href = '/zSpringProject/main/main'");
+				script.println("</script>");
+				script.close();
+			} else if (rightCode == false) {
+				PrintWriter script = response.getWriter();
+				script.println("<script>");
+				script.println("alert('유효하지 않은 코드입니다.');");
+				script.println("location.href = '/zSpringProject/main/main'");
+				script.println("</script>");
+				script.close();
+			}
+		} else if (session.getAttribute("userId") == null) {
+			PrintWriter script = response.getWriter();
+			script.println("<script>");
+			script.println("alert('로그인을 해주세요.');");
+			script.println("location.href = '/zSpringProject/user/loginForm'");
+			script.println("</script>");
+			script.close();
+		}
+
+		return "";
+	}
+
+	// ID 중복체크 창
+	@RequestMapping(value = "idCheck", method = RequestMethod.GET)
+	public String idCheck(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		response.setContentType("text/html; charset=UTF-8");
+		request.setCharacterEncoding("utf-8");
+
+		String userId = request.getParameter("userId");
+		// System.out.println(userId);
+		MybatisUserDao service = MybatisUserDao.getInstance();
+
 		int userIdChecked = service.getUserIdCheck(userId);
-		System.out.println(userIdChecked+"-------------------Controller");
-		
-		//el로 사용할 수 있게 보냄
+
+		// el로 사용할 수 있게 보냄
 		request.setAttribute("userIdChecked", userIdChecked);
 		request.setAttribute("userId", userId);
-		return "/WEB-INF/view/user/confirmId.jsp";
+		return "/WEB-INF/view/user/idCheck.jsp";
+	}
+
+	// 마이페이지
+	@RequestMapping(value = "myPage", method = RequestMethod.GET)
+	public String myPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		HttpSession session = request.getSession();
+		String userId = (String) session.getAttribute("userId");
+		MybatisUserDao service = MybatisUserDao.getInstance();
+		
+		
+		int userScore = service.getUserScore(userId);
+		request.setAttribute("userScore", userScore);
+
+		return "/WEB-INF/view/user/myPage.jsp";
+	}
+
+	// 회원 정보 수정 페이지
+	@RequestMapping(value = "userModifyForm", method = RequestMethod.GET)
+	public String userModifyForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+	
+
+		return "/WEB-INF/view/user/userModifyForm.jsp";
+	}
+
+	// 구매 내역
+	@RequestMapping(value = "saleList", method = RequestMethod.GET)
+	public String saleList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+
+
+		return "/WEB-INF/view/user/saleList.jsp";
+	}
+
+	// 찜 목록
+	@RequestMapping(value = "jjimList", method = RequestMethod.GET)
+	public String jjimList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		
+		return "/WEB-INF/view/user/jjimList.jsp";
 	}
 }
