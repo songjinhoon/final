@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mybatis.UserMapper">
+	<insert id="joinUser" parameterType="User">
+			INSERT INTO user1
+			VALUES (#{userid}, #{userpasswd}, #{username}, #{useremail}, #{useremailhash},
+			 #{useremailcheck}, #{userphone}, #{useraddress},0)
+	</insert>
+	
+	<select id="getUserEmailChecked" resultType="int" parameterType="String">
+		SELECT useremailcheck FROM user1
+		WHERE userid = #{userid}
+	</select>
+	
+	<select id="getUserEmail" resultType="String" parameterType="String">
+		SELECT useremail FROM user1
+		WHERE userid = #{userid}
+	</select>
+	
+	<update id="setUserEmailChecked" parameterType="String">
+		UPDATE user1
+		SET useremailcheck=1
+		WHERE userid=#{userId}
+	</update>
+	
+	<select id="getUserIdCheck" parameterType="String" resultType="String">
+		SELECT userid
+		FROM user1 
+		WHERE userid = #{userid}
+	</select>
+	
+	<select id="Login" parameterType="List" resultType="String">
+		SELECT userid
+		FROM user1
+		WHERE userid = #{userid} and userpasswd = #{userpasswd}
+	</select>
+	
+	<select id="getUserScore" parameterType="String" resultType="int">
+		SELECT userscore
+		FROM user1 
+		WHERE userid = #{userid}
+	</select>
+	
+	<select id="getUserInfo" parameterType="String" resultType="User">
+		SELECT *
+		FROM user1
+		WHERE userid = #{userId}
+	</select>
+</mapper>
