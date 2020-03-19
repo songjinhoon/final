@@ -105,67 +105,78 @@ public class UserController extends ActionAnnotation {
 		}
 	}
 
+	//로그인 폼
 	@RequestMapping(value = "loginForm", method = RequestMethod.GET)
 	public String loginForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		HttpSession session = request.getSession();
+		String userId = (String) session.getAttribute("userId");
+		if(userId != null) {
+			int emailCheck = (int) session.getAttribute("emailCheck");
+			System.out.println("emailCheck : " + emailCheck);
+		}
+		
+		System.out.println("userID : " + userId);
+		
+		
 		String naverApiUrl = NaverAPI.getApiUrl();
 	    String kakaoApiUrl = KakaoAPI.getApiUrl();
 	    request.setAttribute("naverApiUrl", naverApiUrl);
 		request.setAttribute("kakaoApiUrl", kakaoApiUrl);
-		
 		return "/WEB-INF/view/user/loginForm.jsp";
 	}
 	
 	// 로그인 처리
-	@RequestMapping(value = "loginPro", method = RequestMethod.POST)
-	public String loginPro(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		@RequestMapping(value = "loginPro", method = RequestMethod.POST)
+		public String loginPro(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		response.setContentType("text/html; charset=UTF-8");
-		request.setCharacterEncoding("utf-8");
+			response.setContentType("text/html; charset=UTF-8");
+			request.setCharacterEncoding("utf-8");
 
-		User user = new User();
-		HttpSession session = request.getSession();
-		String userId = request.getParameter("userId");
-	
-		String userPasswd = request.getParameter("userPasswd");
-		int emailCheck = 0;
-
-		user.setUserid(userId);
-		user.setUserpasswd(userPasswd);
-
-		MybatisUserDao service = MybatisUserDao.getInstance();
-		userId = service.Login(user);
-		emailCheck = service.getUserEmailChecked(userId);
+			User user = new User();
+			HttpSession session = request.getSession();
+			String userId = request.getParameter("userId");
 		
-		request.setAttribute("emailCheck", emailCheck);
+			String userPasswd = request.getParameter("userPasswd");
+			int emailCheck = 0;
 
-		PrintWriter script = response.getWriter();
+			user.setUserid(userId);
+			user.setUserpasswd(userPasswd);
 
-		if (userId == null) {
-			script.println("<script>");
-			script.println("alert('로그인에 실패하셨습니다. \\n다시 로그인해주세요.');");
-			script.println("location.href = '/zSpringProject/user/loginForm'");
-			script.println("</script>");
-			script.close();
-		} else if (userId != null) {
-			if (emailCheck == 1) {
-				user = service.getUserInfo(userId);
-				session.setAttribute("userId", user.getUserid());
-				session.setAttribute("userName", user.getUsername());
+			MybatisUserDao service = MybatisUserDao.getInstance();
+			userId = service.Login(user);
+			emailCheck = service.getUserEmailChecked(userId);
+
+			session.setAttribute("emailCheck", emailCheck);
+
+			PrintWriter script = response.getWriter();
+
+			if (userId == null) {
 				script.println("<script>");
-				script.println("location.href = '/zSpringProject/main/main'");
-				script.println("</script>");
-				script.close();
-			} else if (emailCheck != 1) {
-				script.println("<script>");
-				script.println("alert('이메일 인증을 완료하지 않았습니다.\\n인증 완료 후 다시 로그인해주세요.');");
+				script.println("alert('로그인에 실패하셨습니다. \\n다시 로그인해주세요.');");
 				script.println("location.href = '/zSpringProject/user/loginForm'");
 				script.println("</script>");
 				script.close();
+			} else if (userId != null) {
+				if (emailCheck == 1) {
+					user = service.getUserInfo(userId);
+					session.setAttribute("userId", user.getUserid());
+					session.setAttribute("userName", user.getUsername());
+					script.println("<script>");
+					script.println("location.href = '/zSpringProject/main/main'");
+					script.println("</script>");
+					script.close();
+				} else if (emailCheck != 1) {
+					session.setAttribute("userId", userId);
+					script.println("<script>");
+					script.println("alert('이메일 인증을 완료하지 않았습니다.\\n인증 완료 후 다시 로그인해주세요.');");
+					System.out.println(userId);
+					script.println("location.href = '/zSpringProject/user/loginForm'");
+					script.println("</script>");
+					script.close();
+				}
 			}
+			return "";
 		}
-
-		return "";
-	}
 
 	@RequestMapping(value = "logoutForm", method = RequestMethod.GET)
 	public String logout(HttpServletRequest request, HttpServletResponse response) {
